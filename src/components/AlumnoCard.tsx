@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Alumno } from '../type/types';
 
 type AlumnoCardProps = {
@@ -14,15 +14,25 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }:
   console.log("¿Recibo onEliminar?", typeof onEliminar);
 
   const confirmarEliminacion = () => {
+    
+    // Alert no funciona en web (solo para probar funcionalidad boton)
+    if (Platform.OS === 'web') {
+      const confirmado = window.confirm(`¿Estás seguro de que quieres eliminar a ${alumno.nombre}?`);
+      if (confirmado) {
+        onEliminar(alumno);
+      }
+    } 
     // Aquí podrías usar un Alert para confirmar la eliminación
-    Alert.alert(
-      "Confirmar eliminación",
-      `¿Estás seguro de que quieres eliminar a ${alumno.nombre}?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => onEliminar(alumno) }
-      ]
-    );
+    else {
+      Alert.alert(
+        "Confirmar eliminación",
+        `¿Estás seguro de que quieres eliminar a ${alumno.nombre}?`,
+        [
+          { text: "Cancelar", style: "cancel" },
+          { text: "Eliminar", style: "destructive", onPress: () => onEliminar(alumno) }
+        ]
+      );
+    }
   };
 
   return (
@@ -30,8 +40,17 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }:
       
       {/* 1. CABECERA: Nombre y Tarifa */}
       <View style={styles.cabecera}>
+        
         <Text style={styles.nombre}>{alumno.nombre}</Text>
-        <Text style={styles.tarifa}>{alumno.precioPorHora}€ / h</Text>
+        
+        <View style={styles.contenedorDerecha}>
+          <Text style={styles.tarifa}>{alumno.precioPorHora}€ / h</Text>
+          
+          <TouchableOpacity onPress={confirmarEliminacion} style={styles.botonEliminar}>
+            <Text style={styles.textoBotonEliminar}>✕</Text>
+          </TouchableOpacity>
+        
+        </View>
       </View>
 
       {/* 2. DATOS PRINCIPALES: Panel tipo Dashboard */}
@@ -70,9 +89,11 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }:
       </View>
 
       {/* Botón de eliminar */}
+      {/*
       <TouchableOpacity style={styles.botonEliminar} onPress={confirmarEliminacion}>
         <Text style={styles.textoBotonEliminar}>Eliminar</Text>
       </TouchableOpacity>
+      */}
 
     </View>
   );
@@ -101,6 +122,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
+  },
+
+  contenedorDerecha: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12, 
   },
   nombre: {
     fontSize: 20,
@@ -186,15 +213,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   botonEliminar: {
-    marginTop: 8,
-    padding: 8,
-    alignItems: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#eee',
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: '#e74d3c25', // Rojo para el botón de eliminar
   },
   textoBotonEliminar: {
     color: '#e74c3c',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });
