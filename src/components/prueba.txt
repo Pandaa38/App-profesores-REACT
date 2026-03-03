@@ -1,0 +1,74 @@
+import { View, Text, StyleSheet } from 'react-native';
+import { Alumno } from '../type/types';
+
+type AlumnoCardProps = {
+  alumno: Alumno;
+}
+
+export default function AlumnoCard({ alumno }: AlumnoCardProps) {
+  const deudaTotal = alumno.horasPendientes * alumno.precioPorHora;
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.nombre}>{alumno.nombre}</Text>
+
+      <View style={styles.fila}>
+        <Text style={styles.etiqueta}>Precio/hora:</Text>
+        <Text style={styles.valor}>{alumno.precioPorHora}€</Text>
+      </View>
+
+      <View style={styles.fila}>
+        <Text style={styles.etiqueta}>Horas pendientes:</Text>
+        <Text style={styles.valor}>{alumno.horasPendientes}h</Text>
+      </View>
+
+      <View style={styles.fila}>
+        <Text style={styles.etiqueta}>Deuda total:</Text>
+        <Text style={styles.deuda}>{deudaTotal}€</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginVertical: 8,
+    marginHorizontal: 4,
+    width: '90%',
+    // Sombra en Android
+    elevation: 3,
+    // Sombra en iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  nombre: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#333',
+  },
+  fila: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  etiqueta: {
+    color: '#666',
+    fontSize: 14,
+  },
+  valor: {
+    fontWeight: '600',
+    fontSize: 14,
+    color: '#333',
+  },
+  deuda: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#e74c3c', // rojo para la deuda
+  },
+});
