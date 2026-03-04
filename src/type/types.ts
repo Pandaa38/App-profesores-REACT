@@ -1,6 +1,6 @@
 // Basado en tu modelo de Alumno
 export type Alumno = {
-  id: string;
+  id: number;
   nombre: string;
   precioPorHora: number;
   horasPendientes: number;

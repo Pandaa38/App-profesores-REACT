@@ -1,12 +1,14 @@
+import { useState } from 'react';
+
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
-
-import { Alumno } from './type/types';
 import AlumnoCard from './src/components/AlumnoCard';
+import AddButton from './src/components/AddButton';
+import FormularioAlumno from './src/components/FormAlumno';
+import { useAlumnos } from './src/hooks/useAlumnos';
 
-import { useState } from 'react';
-
+/*
 const listaAlumnos: Alumno[] = [
   {
     id: '1', //cambiar para mejor sql?
@@ -39,43 +41,33 @@ const listaAlumnos: Alumno[] = [
     horasPendientes: 8
   }
 ];
-
+*/
 
 export default function App() {
-  const [alumnos, setAlumnos] = useState<Alumno[]>(listaAlumnos);
+  
+  const [formVisible, setFormVisible] = useState(false);
+  const { alumnos, handleCobrar, handleAddHoras, handleEliminar, handleAñadirAlumno } = useAlumnos();
 
-
-  const handleCobrar = (alumno: Alumno) => {
-    setAlumnos(alumnos.map(a => a.id === alumno.id ? { ...a, horasPendientes: 0 } : a ));
-  };
-
-  const handleAddHoras = (alumno: Alumno, horas: number) => {
-    setAlumnos(alumnos.map(a => a.id === alumno.id 
-        ? { ...a, horasPendientes: a.horasPendientes + horas } : a ));
-  };
-
-  const handleEliminar = (alumno: Alumno) => {
-    setAlumnos(alumnos.filter(a => a.id !== alumno.id));
+  const onGuardar = (nombre: string, precioPorHora: number) => {
+    handleAñadirAlumno(nombre, precioPorHora);
+    setFormVisible(false);
   };
 
   return (
     <View style={styles.container}>
-
-      {/*HEADER*/}
       <View style={styles.header}>
         <Text style={{ color: 'black', fontWeight: 'bold' }}>Menu</Text>
         <Text style={{ color: 'black', fontWeight: 'bold' }}>Ajustes</Text>
       </View>
 
-      {/*CONTENIDO PRINCIPAL*/}
       <StatusBar style="auto" />
-      <ScrollView 
+      <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {alumnos.map(alumno => (
-          <AlumnoCard 
+          <AlumnoCard
             key={alumno.id}
             alumno={alumno}
             onAddHoras={handleAddHoras}
@@ -84,6 +76,13 @@ export default function App() {
           />
         ))}
       </ScrollView>
+
+      <FormularioAlumno
+        visible={formVisible}
+        onGuardar={onGuardar}
+        onCancelar={() => setFormVisible(false)}
+      />
+      <AddButton onPress={() => setFormVisible(true)} />
     </View>
   );
 }
