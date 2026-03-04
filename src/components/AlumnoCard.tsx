@@ -11,22 +11,14 @@ type AlumnoCardProps = {
 export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }: AlumnoCardProps) {
   const deudaTotal = alumno.horasPendientes * alumno.precioPorHora;
 
-  console.log("¿Recibo onEliminar?", typeof onEliminar);
-
   const confirmarEliminacion = () => {
-    
-    // Alert no funciona en web (solo para probar funcionalidad boton)
     if (Platform.OS === 'web') {
       const confirmado = window.confirm(`¿Estás seguro de que quieres eliminar a ${alumno.nombre}?`);
-      if (confirmado) {
-        onEliminar(alumno);
-      }
-    } 
-    // Aquí podrías usar un Alert para confirmar la eliminación
-    else {
+      if (confirmado) onEliminar(alumno);
+    } else {
       Alert.alert(
         "Confirmar eliminación",
-        `¿Estás seguro de que quieres eliminar a ${alumno.nombre}?`,
+        `¿Eliminar a ${alumno.nombre}?`,
         [
           { text: "Cancelar", style: "cancel" },
           { text: "Eliminar", style: "destructive", onPress: () => onEliminar(alumno) }
@@ -37,147 +29,142 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }:
 
   return (
     <View style={styles.card}>
-      
-      {/* 1. CABECERA: Nombre y Tarifa */}
+      {/* CABECERA */}
       <View style={styles.cabecera}>
-        
         <Text style={styles.nombre}>{alumno.nombre}</Text>
-        
         <View style={styles.contenedorDerecha}>
-          <Text style={styles.tarifa}>{alumno.precioPorHora}€ / h</Text>
-          
+          <Text style={styles.tarifa}>{alumno.precioPorHora}€/h</Text>
           <TouchableOpacity onPress={confirmarEliminacion} style={styles.botonEliminar}>
             <Text style={styles.textoBotonEliminar}>✕</Text>
           </TouchableOpacity>
-        
         </View>
       </View>
 
-      {/* 2. DATOS PRINCIPALES: Panel tipo Dashboard */}
+      {/* PANEL DE DATOS */}
       <View style={styles.panelDatos}>
         <View style={styles.cajaDato}>
-          <Text style={styles.numeroGrande}>{alumno.horasPendientes}h</Text>
+          <Text style={styles.numeroGrande}>{alumno.horasPendientes}<Text style={styles.unidades}>h</Text></Text>
           <Text style={styles.etiquetaDato}>Pendientes</Text>
         </View>
-
-        {/* Pequeña línea divisoria vertical */}
         <View style={styles.divisor} />
-
         <View style={styles.cajaDato}>
-          <Text style={[styles.numeroGrande, styles.textoDeuda]}>{deudaTotal}€</Text>
+          <Text style={[styles.numeroGrande, deudaTotal > 0 && styles.textoDeuda]}>
+            {deudaTotal}<Text style={styles.unidades}>€</Text>
+          </Text>
           <Text style={styles.etiquetaDato}>Deuda</Text>
         </View>
       </View>
 
-      {/* 3. BOTONERA DE ACCIONES */}
+      {/* BOTONERA */}
       <View style={styles.filaBotones}>
-        {/* Grupo de añadir horas */}
         <View style={styles.grupoBotonesHoras}>
           <TouchableOpacity style={styles.botonSecundario} onPress={() => onAddHoras(alumno, 0.5)}>
             <Text style={styles.textoBotonSecundario}>+0.5h</Text>
           </TouchableOpacity>
-          
           <TouchableOpacity style={styles.botonSecundario} onPress={() => onAddHoras(alumno, 1)}>
             <Text style={styles.textoBotonSecundario}>+1h</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Botón principal de cobrar */}
-        <TouchableOpacity style={styles.botonPrincipal} onPress={() => onCobrar(alumno)}>
+        
+        <TouchableOpacity 
+          style={[styles.botonPrincipal, deudaTotal === 0 && styles.botonDesactivado]} 
+          onPress={() => onCobrar(alumno)}
+          disabled={deudaTotal === 0}
+        >
           <Text style={styles.textoBotonPrincipal}>Cobrar</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Botón de eliminar */}
-      {/*
-      <TouchableOpacity style={styles.botonEliminar} onPress={confirmarEliminacion}>
-        <Text style={styles.textoBotonEliminar}>Eliminar</Text>
-      </TouchableOpacity>
-      */}
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 16,
-    marginVertical: 10,
+    padding: 20,
+    marginVertical: 8,
     marginHorizontal: '5%',
     width: '90%',
-
-    elevation: 4, // Sombra para Android
-
-    shadowColor: '#000', // Sombra para iOS
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    // Sombras súper sutiles para un look limpio
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    elevation: 1, // Android
+    shadowColor: '#000', // iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
   },
-  
-  // --- CABECERA ---
   cabecera: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
-
   contenedorDerecha: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12, 
+    gap: 8,
   },
   nombre: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1a1a1a', // Negro un poco más suave
+    fontWeight: '700',
+    color: '#111827',
   },
   tarifa: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 13,
+    color: '#6B7280',
     fontWeight: '600',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#F3F4F6',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 8, // Lo convertimos en una especie de "Etiqueta/Badge"
+    borderRadius: 6,
   },
-
-  // --- PANEL DE DATOS ---
+  botonEliminar: {
+    padding: 4,
+  },
+  textoBotonEliminar: {
+    color: '#D1D5DB', // Gris muy clarito que no molesta
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   panelDatos: {
     flexDirection: 'row',
-    backgroundColor: '#f8f9fa', // Fondo gris muy clarito para agrupar los datos
+    backgroundColor: '#F9FAFB',
     borderRadius: 12,
-    paddingVertical: 12,
+    paddingVertical: 14,
     marginBottom: 16,
   },
   cajaDato: {
-    flex: 1, // Ocupa el 50% del espacio
+    flex: 1,
     alignItems: 'center',
   },
   divisor: {
     width: 1,
-    backgroundColor: '#e0e0e0', // Línea sutil que separa las horas de la deuda
+    backgroundColor: '#E5E7EB',
     marginVertical: 4,
   },
   numeroGrande: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#333',
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  unidades: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#9CA3AF',
   },
   textoDeuda: {
-    color: '#e74c3c', // Rojo para que la deuda salte a la vista
+    color: '#EF4444', // Un rojo más mate/profesional
   },
   etiquetaDato: {
-    fontSize: 12,
-    color: '#666',
-    textTransform: 'uppercase', // Queda muy profesional en subtítulos
-    marginTop: 2,
-    fontWeight: '600',
+    fontSize: 11,
+    color: '#9CA3AF',
+    textTransform: 'uppercase',
+    marginTop: 4,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
-
-  // --- BOTONERA ---
   filaBotones: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -185,41 +172,31 @@ const styles = StyleSheet.create({
   },
   grupoBotonesHoras: {
     flexDirection: 'row',
-    gap: 8, // Espacio entre los botones de horas (Solo funciona en RN moderno)
+    gap: 8,
   },
   botonSecundario: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: '#3498db', // Azul brillante
-    marginRight: 8, // Por si el gap no lo pilla tu versión
+    backgroundColor: '#F3F4F6', // Sin bordes, solo un fondo gris suave
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
   },
   textoBotonSecundario: {
-    color: '#3498db',
-    fontWeight: 'bold',
+    color: '#374151',
+    fontWeight: '700',
     fontSize: 14,
   },
   botonPrincipal: {
-    backgroundColor: '#2ecc71', // Verde esmeralda (acción positiva)
+    backgroundColor: '#111827', // Negro pizarra, súper elegante
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    elevation: 2, // Sombra para el botón
+    paddingHorizontal: 24,
+    borderRadius: 10,
   },
   textoBotonPrincipal: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 15,
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
   },
-  botonEliminar: {
-    padding: 6,
-    borderRadius: 20,
-    backgroundColor: '#e74d3c25', // Rojo para el botón de eliminar
-  },
-  textoBotonEliminar: {
-    color: '#e74c3c',
-    fontSize: 13,
-    fontWeight: 'bold',
-  },
+  botonDesactivado: {
+    backgroundColor: '#E5E7EB', // Si no hay deuda, se pone gris
+  }
 });

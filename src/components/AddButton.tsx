@@ -6,7 +6,7 @@ type AddButtonProps = {
 
 export default function AddButton({ onPress }: AddButtonProps) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.button}>
+    <TouchableOpacity onPress={onPress} style={styles.button} activeOpacity={0.8}>
       <Text style={styles.text}>+</Text>
     </TouchableOpacity>
   );
@@ -14,17 +14,25 @@ export default function AddButton({ onPress }: AddButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#2ecc71',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    backgroundColor: '#111827', // A juego con el botón "Cobrar"
+    width: 64,  // Un poco más grande para ser el centro de atención
+    height: 64,
+    borderRadius: 32, // Perfectamente redondo
     alignItems: 'center',
     justifyContent: 'center',
+    
+    // Sombra para que flote
+    elevation: 8,
+    shadowColor: '#111827',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   text: {
     color: '#fff',
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '300', // Un 'más' fino queda más moderno que uno en negrita
     lineHeight: 34,
+    marginTop: -2, // Centrado visual fino
   },
 });

@@ -2,49 +2,15 @@ import { useState } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient'; // IMPORTANTE AÑADIR ESTO
 
 import AlumnoCard from './src/components/AlumnoCard';
 import AddButton from './src/components/AddButton';
+
 import FormularioAlumno from './src/components/FormAlumno';
 import { useAlumnos } from './src/hooks/useAlumnos';
 
-/*
-const listaAlumnos: Alumno[] = [
-  {
-    id: '1', //cambiar para mejor sql?
-    nombre: "Bea",
-    precioPorHora: 15,
-    horasPendientes: 2
-  },
-  {
-    id: '2',
-    nombre: "Erik",
-    precioPorHora: 18,
-    horasPendientes: 10
-  },
-  {
-    id: '3',
-    nombre: "Daniela",
-    precioPorHora: 18,
-    horasPendientes: 10
-  },
-  {
-    id: '4',
-    nombre: "Sofia",
-    precioPorHora: 20,
-    horasPendientes: 5
-  },
-  {
-    id: '5',
-    nombre: "Miranda",
-    precioPorHora: 15,
-    horasPendientes: 8
-  }
-];
-*/
-
 export default function App() {
-  
   const [formVisible, setFormVisible] = useState(false);
   const { alumnos, handleCobrar, handleAddHoras, handleEliminar, handleAñadirAlumno } = useAlumnos();
 
@@ -55,12 +21,15 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
+
+      {/* Cabecera minimalista */}
       <View style={styles.header}>
-        <Text style={{ color: 'black', fontWeight: 'bold' }}>Menu</Text>
-        <Text style={{ color: 'black', fontWeight: 'bold' }}>Ajustes</Text>
+        <Text style={styles.headerText}>Menú</Text>
+        <Text style={styles.headerTitle}>Mis Alumnos</Text>
+        <Text style={styles.headerText}>Ajustes</Text>
       </View>
 
-      <StatusBar style="auto" />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -77,12 +46,23 @@ export default function App() {
         ))}
       </ScrollView>
 
+      {/* DEGRADADO INFERIOR (Efecto Tricount) */}
+      <LinearGradient
+        colors={['rgba(249, 250, 251, 0)', 'rgba(249, 250, 251, 1)']} // Funde hacia el color de fondo
+        style={styles.gradientBottom}
+        pointerEvents="none" // FUNDAMENTAL: Permite hacer clic "a través" del degradado
+      />
+
+      {/* BOTÓN FLOTANTE */}
+      <View style={styles.fabContainer}>
+        <AddButton onPress={() => setFormVisible(true)} />
+      </View>
+
       <FormularioAlumno
         visible={formVisible}
         onGuardar={onGuardar}
         onCancelar={() => setFormVisible(false)}
       />
-      <AddButton onPress={() => setFormVisible(true)} />
     </View>
   );
 }
@@ -90,24 +70,29 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#43c8dfb7',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F9FAFB', // Un gris muy, muy claro (casi blanco) elegante
     width: '100%',
   },
   header: {
     width: '100%',
     height: 60,
-    backgroundColor: '#ffffff',
-
+    backgroundColor: '#F9FAFB', // Mismo fondo para que se fusione
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     zIndex: 1,
-
-    borderBottomWidth: StyleSheet.hairlineWidth, // La línea más fina posible
-    borderBottomColor: '#1d6fa5',
+    paddingTop: 10,
+  },
+  headerText: {
+    color: '#9CA3AF', // Gris suave para acciones secundarias
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  headerTitle: {
+    color: '#111827', // Negro pizarra para el título
+    fontWeight: 'bold',
+    fontSize: 18,
   },
   scroll: {
     flex: 1,
@@ -115,7 +100,20 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     alignItems: 'center',
-    paddingVertical: 20,
-    paddingBottom: 40,
+    paddingVertical: 10,
+    paddingBottom: 140, // Mucho espacio para que la última tarjeta pase el botón flotante
+  },
+  gradientBottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 120, // Altura del difuminado
+  },
+  fabContainer: {
+    position: 'absolute',
+    bottom: 40, // Altura del botón desde abajo
+    alignSelf: 'center',
+    zIndex: 10,
   },
 });
