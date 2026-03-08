@@ -6,13 +6,13 @@ export type Alumno = {
   horasPendientes: number;
 }
 
-// Basado en tu modelo de PagoRegistro
 export type PagoRegistro = {
-  id: string;
+  id: number;
+  alumnoId: number | null;
   alumnoNombre: string;
-  montoCobrado: number;
   horasCobradas: number;
-  fecha: string; // Ejemplo: "26/02/2026 14:30"
+  montoCobrado: number;
+  fecha: string;
 }
 
 export type Clase = {

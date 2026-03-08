@@ -1,21 +1,41 @@
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Alumno } from '../type/types';
 
 type FormAlumnoProps = {
   visible: boolean;
-  onGuardar: (nombre: string, precioPorHora: number) => void;
+  alumnoEditar?: Alumno;
+  onGuardar: (nombre: string, precioPorHora: number, horasPendientes?: number) => void;
   onCancelar: () => void;
 };
 
-export default function FormularioAlumno({ visible, onGuardar, onCancelar }: FormAlumnoProps) {
+export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onCancelar }: FormAlumnoProps) {
   const [nombre, setNombre] = useState('');
   const [precio, setPrecio] = useState('');
+  const [horas, setHoras] = useState('');
+
+  useEffect(() => {
+    if (alumnoEditar) {
+      setNombre(alumnoEditar.nombre);
+      setPrecio(alumnoEditar.precioPorHora.toString());
+      setHoras(alumnoEditar.horasPendientes.toString());
+    } else {
+      setNombre('');
+      setPrecio('');
+      setHoras('');
+    }
+  }, [alumnoEditar, visible]);
 
   const handleGuardar = () => {
-    if (!nombre || !precio) return; // no guardar si están vacíos
-    onGuardar(nombre, parseFloat(precio));
-    setNombre('');  // limpiar formulario
+    if (!nombre || !precio) return;
+    onGuardar(
+      nombre, 
+      parseFloat(precio),
+      alumnoEditar ? parseFloat(horas) || 0 : undefined  
+    );
+    setNombre('');
     setPrecio('');
+    setHoras('');
   };
 
   return (
@@ -23,7 +43,9 @@ export default function FormularioAlumno({ visible, onGuardar, onCancelar }: For
       <View style={styles.fondo}>
         <View style={styles.formulario}>
 
-          <Text style={styles.titulo}>Nuevo alumno</Text>
+          <Text style={styles.titulo}>
+            {alumnoEditar ? 'Editar alumno' : 'Nuevo alumno'}
+          </Text>
 
           <TextInput
             style={styles.input}
@@ -39,6 +61,16 @@ export default function FormularioAlumno({ visible, onGuardar, onCancelar }: For
             onChangeText={setPrecio}
             keyboardType="numeric"
           />
+          
+          {alumnoEditar && (
+            <TextInput
+              style={styles.input}
+              placeholder="Horas pendientes"
+              value={horas}
+              onChangeText={setHoras}
+              keyboardType="numeric"
+            />
+          )}
 
           <View style={styles.botones}>
             <TouchableOpacity style={styles.botonCancelar} onPress={onCancelar}>

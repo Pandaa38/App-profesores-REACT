@@ -6,9 +6,10 @@ type AlumnoCardProps = {
   onCobrar: (alumno: Alumno) => void;
   onAddHoras: (alumno: Alumno, horas: number) => void;
   onEliminar: (alumno: Alumno) => void;
+  onEditar: (alumno: Alumno) => void;
 };
 
-export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }: AlumnoCardProps) {
+export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, onEditar }: AlumnoCardProps) {
   const deudaTotal = alumno.horasPendientes * alumno.precioPorHora;
 
   const confirmarEliminacion = () => {
@@ -63,6 +64,9 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar }:
           </TouchableOpacity>
           <TouchableOpacity style={styles.botonSecundario} onPress={() => onAddHoras(alumno, 1)}>
             <Text style={styles.textoBotonSecundario}>+1h</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.botonSecundario} onPress={() => onEditar(alumno)}>
+            <Text style={styles.textoBotonSecundario}>✏️</Text>
           </TouchableOpacity>
         </View>
         

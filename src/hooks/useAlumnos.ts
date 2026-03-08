@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
+
 import { Alumno } from '../type/types';
+
 import { inicializarDB } from '../database/database';
-import { getAlumnos, addAlumno, updateHoras, cobrarAlumno, deleteAlumno } from '../database/dataAlumnos';
+import { getAlumnos, addAlumno, updateHoras, cobrarAlumno, deleteAlumno, updateAlumno } from '../database/dataAlumnos';
+import { addPago } from '../database/dataHistorial';
 
 export function useAlumnos() {
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
@@ -14,6 +17,8 @@ export function useAlumnos() {
   useEffect(() => { inicializarDB(); cargarAlumnos(); }, []);
 
   const handleCobrar = (alumno: Alumno) => {
+    const monto = alumno.horasPendientes * alumno.precioPorHora;
+    addPago(alumno.id, alumno.nombre, alumno.horasPendientes, monto);
     cobrarAlumno(alumno.id);
     cargarAlumnos();
   };
@@ -33,11 +38,17 @@ export function useAlumnos() {
     cargarAlumnos();
   };
 
+  const handleEditarAlumno = (alumno: Alumno, nombre: string, precioPorHora: number, horasPendientes: number) => {
+    updateAlumno(alumno.id, nombre, precioPorHora, horasPendientes);
+    cargarAlumnos();
+  };
+
   return {
     alumnos,
     handleCobrar,
     handleAddHoras,
     handleEliminar,
     handleAñadirAlumno,
+    handleEditarAlumno,
   };
 }

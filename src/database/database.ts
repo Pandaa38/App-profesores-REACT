@@ -16,6 +16,23 @@ export function inicializarDB() {
       horasPendientes REAL NOT NULL DEFAULT 0 
       CONSTRAINT chk_horas_positivas CHECK (horasPendientes >= 0)
     );
+
+    CREATE TABLE IF NOT EXISTS pagos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+      alumnoId INTEGER REFERENCES alumnos(id) ON DELETE SET NULL,
+
+      alumnoNombre TEXT NOT NULL,
+
+      horasCobradas REAL NOT NULL 
+      CONSTRAINT chk_horas_cobradas CHECK (horasCobradas > 0),
+
+      montoCobrado REAL NOT NULL 
+      CONSTRAINT chk_monto_cobrado CHECK (montoCobrado > 0),
+
+      fecha TEXT NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
+    );
+
   `);
 }
 

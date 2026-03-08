@@ -38,3 +38,10 @@ export function deleteAlumno(id: number): void {
     `DELETE FROM alumnos WHERE id = ?;`, [id]
   );
 }
+
+export function updateAlumno(id: number, nombre: string, precioPorHora: number, horasPendientes: number): void {
+  db.runSync(
+    'UPDATE alumnos SET nombre = ?, precioPorHora = ?, horasPendientes = ? WHERE id = ?;',
+    [nombre, precioPorHora, Math.max(0, horasPendientes), id]
+  );
+}
