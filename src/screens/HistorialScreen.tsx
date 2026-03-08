@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AntDesign } from '@expo/vector-icons';
 
 import PagoCard from '../components/PagoCard';
+import Header from '../components/Header';
+import FilterModal from '../components/FilterModal';
 import { useHistorial } from '../hooks/useHistorial';
+import { useAlumnos } from '../hooks/useAlumnos';
 
 export default function HistorialScreen() {
-  const { pagos, resumen, cargarHistorial } = useHistorial();
+  const { pagos, resumen, filtros, cargarHistorial, aplicarFiltros, handleVaciarHistorial } = useHistorial();
+  const { alumnos } = useAlumnos();
+  const [filtroVisible, setFiltroVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -16,17 +22,48 @@ export default function HistorialScreen() {
     }, [cargarHistorial])
   );
 
+  const handleBorrarHistorial = () => {
+    Alert.alert(
+      'Borrar historial',
+      '¿Estás seguro? Esta acción no se puede deshacer.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Borrar', style: 'destructive', onPress: handleVaciarHistorial },
+      ]
+    );
+  };
+
+  // Si hay filtros activos, el icono de filtrar se marca en negro
+  const filtrosActivos =
+    filtros.periodo !== 'todos' ||
+    filtros.alumnoId !== null ||
+    filtros.orden !== 'recientes';
+
   return (
     <SafeAreaView style={styles.container}>
 
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Historial</Text>
-      </View>
+      <Header title="Historial" />
 
-      {/* Resumen total */}
+      {/* Resumen total + botones */}
       <View style={styles.resumenContainer}>
-        <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}€</Text>
-        <Text style={styles.resumenHoras}>{resumen.totalHoras}h totales</Text>
+        <View style={styles.resumenTextos}>
+          <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}€</Text>
+          <Text style={styles.resumenHoras}>{resumen.totalHoras}h totales</Text>
+        </View>
+        <View style={styles.resumenBotones}>
+          <TouchableOpacity onPress={handleBorrarHistorial}>
+            <AntDesign name="delete" size={22} color="#9CA3AF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.botonFiltrar, filtrosActivos && styles.botonFiltrarActivo]}
+            onPress={() => setFiltroVisible(true)}
+          >
+            <AntDesign name="filter" size={16} color={filtrosActivos ? '#fff' : '#111827'} />
+            <Text style={[styles.textoFiltrar, filtrosActivos && styles.textoFiltrarActivo]}>
+              Filtrar
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.separador} />
@@ -46,11 +83,18 @@ export default function HistorialScreen() {
         )}
       </ScrollView>
 
-      {/* Difuminado inferior */}
       <LinearGradient
         colors={['rgba(249, 250, 251, 0)', 'rgba(249, 250, 251, 1)']}
         style={styles.gradientBottom}
         pointerEvents="none"
+      />
+
+      <FilterModal
+        visible={filtroVisible}
+        filtros={filtros}
+        alumnos={alumnos}
+        onAplicar={aplicarFiltros}
+        onCerrar={() => setFiltroVisible(false)}
       />
 
     </SafeAreaView>
@@ -62,23 +106,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9FAFB',
   },
-  header: {
-    width: '100%',
-    height: 60,
-    alignItems: 'center',
-    //flexDirection: 'row',
-    justifyContent: 'center',
-    paddingTop: 10,
-  },
-  headerTitle: {
-    color: '#111827',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
   resumenContainer: {
     paddingHorizontal: 24,
     paddingVertical: 16,
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  resumenTextos: {
+    gap: 2,
   },
   resumenMonto: {
     fontSize: 36,
@@ -90,6 +126,33 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     marginTop: 2,
   },
+  resumenBotones: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: 10,
+  },
+  botonFiltrar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  botonFiltrarActivo: {
+    backgroundColor: '#111827',
+    borderColor: '#111827',
+  },
+  textoFiltrar: {
+    fontSize: 13,
+    color: '#111827',
+    fontWeight: '500',
+  },
+  textoFiltrarActivo: {
+    color: '#fff',
+  },
   separador: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#E5E7EB',
@@ -99,15 +162,15 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  scrollContent: {
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingBottom: 140,
+  },
   sinHistorial: {
     color: '#9CA3AF',
     fontSize: 16,
     marginTop: 40,
-  },
-  scrollContent: {
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingBottom: 140,  // ← igual que AlumnosScreen
   },
   gradientBottom: {
     position: 'absolute',
@@ -115,5 +178,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 120,
-    },
-})
+  },
+});

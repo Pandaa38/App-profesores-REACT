@@ -15,24 +15,24 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
   const [horas, setHoras] = useState('');
 
   useEffect(() => {
-    if (alumnoEditar) {
-      setNombre(alumnoEditar.nombre);
-      setPrecio(alumnoEditar.precioPorHora.toString());
-      setHoras(alumnoEditar.horasPendientes.toString());
-    } else {
-      setNombre('');
-      setPrecio('');
-      setHoras('');
-    }
+    // Siempre vaciamos los campos al abrir el modal, tanto para crear como para editar
+    setNombre('');
+    setPrecio('');
+    setHoras('');
   }, [alumnoEditar, visible]);
 
   const handleGuardar = () => {
-    if (!nombre || !precio) return;
-    onGuardar(
-      nombre, 
-      parseFloat(precio),
-      alumnoEditar ? parseFloat(horas) || 0 : undefined  
-    );
+    // Si el usuario no escribe nada, usamos el valor que ya tenía el alumno
+    const nombreFinal = nombre.trim() !== '' ? nombre : (alumnoEditar ? alumnoEditar.nombre : '');
+    const precioFinal = precio.trim() !== '' ? parseFloat(precio) : (alumnoEditar ? alumnoEditar.precioPorHora : NaN);
+    const horasFinal = horas.trim() !== '' ? parseFloat(horas) : (alumnoEditar ? alumnoEditar.horasPendientes : undefined);
+
+    // Validamos: si es un alumno nuevo, exigimos nombre y precio. Si es edición, permitimos que queden como estaban.
+    if (!alumnoEditar && (!nombreFinal || isNaN(precioFinal))) return;
+
+    onGuardar(nombreFinal, precioFinal, horasFinal);
+    
+    // Limpiamos al salir
     setNombre('');
     setPrecio('');
     setHoras('');
@@ -49,14 +49,15 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
 
           <TextInput
             style={styles.input}
-            placeholder="Nombre"
+            // Muestra el nombre actual en el placeholder si estamos editando
+            placeholder={alumnoEditar ? `Nombre: ${alumnoEditar.nombre} (opcional)` : "Nombre"}
             value={nombre}
             onChangeText={setNombre}
           />
 
           <TextInput
             style={styles.input}
-            placeholder="Precio por hora (€)"
+            placeholder={alumnoEditar ? `Precio: ${alumnoEditar.precioPorHora}€ (opcional)` : "Precio por hora (€)"}
             value={precio}
             onChangeText={setPrecio}
             keyboardType="numeric"
@@ -65,7 +66,7 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
           {alumnoEditar && (
             <TextInput
               style={styles.input}
-              placeholder="Horas pendientes"
+              placeholder={`Horas pendientes: ${alumnoEditar.horasPendientes} (opcional)`}
               value={horas}
               onChangeText={setHoras}
               keyboardType="numeric"
@@ -128,9 +129,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   botonGuardar: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: '#111827', // Le pongo tu color pizarra oscuro para que quede más elegante
     padding: 10,
     borderRadius: 8,
+    paddingHorizontal: 20,
   },
   textoGuardar: {
     color: '#fff',

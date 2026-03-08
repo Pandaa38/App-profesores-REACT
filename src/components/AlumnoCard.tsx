@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Alumno } from '../type/types';
 
+import { AntDesign } from '@expo/vector-icons';
+
 type AlumnoCardProps = {
   alumno: Alumno;
   onCobrar: (alumno: Alumno) => void;
@@ -36,7 +38,7 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, o
         <View style={styles.contenedorDerecha}>
           <Text style={styles.tarifa}>{alumno.precioPorHora}€/h</Text>
           <TouchableOpacity onPress={confirmarEliminacion} style={styles.botonEliminar}>
-            <Text style={styles.textoBotonEliminar}>✕</Text>
+            <AntDesign name="delete" size={20} color="#9CA3AF" />
           </TouchableOpacity>
         </View>
       </View>
@@ -66,7 +68,7 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, o
             <Text style={styles.textoBotonSecundario}>+1h</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.botonSecundario} onPress={() => onEditar(alumno)}>
-            <Text style={styles.textoBotonSecundario}>✏️</Text>
+            <AntDesign name="edit" size={20} color="#374151" />
           </TouchableOpacity>
         </View>
         
@@ -127,11 +129,11 @@ const styles = StyleSheet.create({
   botonEliminar: {
     padding: 4,
   },
-  textoBotonEliminar: {
-    color: '#D1D5DB', // Gris muy clarito que no molesta
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  // textoBotonEliminar: {
+  //   color: '#D1D5DB',
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  // },
   panelDatos: {
     flexDirection: 'row',
     backgroundColor: '#F9FAFB',

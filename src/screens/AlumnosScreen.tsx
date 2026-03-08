@@ -8,6 +8,8 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AlumnoCard from '../components/AlumnoCard';
 import AddButton from '../components/AddButton';
 import FormularioAlumno from '../components/FormAlumno';
+import Header from '../components/Header';
+
 import { useAlumnos } from '../hooks/useAlumnos';
 import { Alumno } from '../type/types';
 
@@ -39,9 +41,7 @@ export default function App() {
         <StatusBar style="dark" />
 
         {/* Cabecera minimalista */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Mis Alumnos</Text>
-        </View>
+        <Header title="Mis Alumnos" />
 
         <ScrollView
           style={styles.scroll}
@@ -92,27 +92,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB', // Un gris muy, muy claro (casi blanco) elegante
     width: '100%',
   },
-  header: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#F9FAFB',
-    //flexDirection: 'row',
-    alignItems: 'center',
-    //justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    zIndex: 1,
-    paddingTop: 10,
-  },
-  headerText: {
-    color: '#9CA3AF', // Gris suave para acciones secundarias
-    fontWeight: '500',
-    fontSize: 14,
-  },
-  headerTitle: {
-    color: '#111827', // Negro pizarra para el título
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
+  // header: {
+  //   width: '100%',
+  //   height: 60,
+  //   backgroundColor: '#F9FAFB',
+  //   //flexDirection: 'row',
+  //   alignItems: 'center',
+  //   //justifyContent: 'space-between',
+  //   paddingHorizontal: 24,
+  //   zIndex: 1,
+  //   paddingTop: 10,
+  // },
+  // headerText: {
+  //   color: '#9CA3AF', // Gris suave para acciones secundarias
+  //   fontWeight: '500',
+  //   fontSize: 14,
+  // },
+  // headerTitle: {
+  //   color: '#111827', // Negro pizarra para el título
+  //   fontWeight: 'bold',
+  //   fontSize: 18,
+  // },
   scroll: {
     flex: 1,
     width: '100%',

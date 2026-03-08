@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { PagoRegistro } from '../type/types';
+import { AntDesign } from '@expo/vector-icons';
 
 type PagoCardProps = {
   pago: PagoRegistro;
@@ -35,6 +36,10 @@ export default function PagoCard({ pago }: PagoCardProps) {
         <Text style={styles.monto}>{pago.montoCobrado.toFixed(2)}€</Text>
         <Text style={styles.fecha}>{formatearFecha(pago.fecha)}</Text>
       </View>
+
+      {/* <TouchableOpacity onPress={confirmarEliminacion} style={styles.botonEliminar}>
+            <AntDesign name="delete" size={20} color="#9CA3AF" />
+      </TouchableOpacity> */}
 
     </View>
   );

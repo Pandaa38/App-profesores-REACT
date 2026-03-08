@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
+
+import { AntDesign } from '@expo/vector-icons';
 
 import AlumnosScreen from '../screens/AlumnosScreen';
 import HistorialScreen from '../screens/HistorialScreen';
@@ -23,17 +24,23 @@ export default function TabNavigator() {
       <Tab.Screen 
         name="Alumnos" 
         component={AlumnosScreen}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>👥</Text> }}
+        options={{ 
+          tabBarIcon: ({ color }) => <AntDesign name="user" size={24} color={color} /> 
+        }}
       />
       <Tab.Screen 
         name="Historial" 
         component={HistorialScreen}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>📋</Text> }}
+        options={{ 
+          tabBarIcon: ({ color }) => <AntDesign name="history" size={24} color={color} /> 
+        }}
       />
       <Tab.Screen 
         name="Ajustes" 
         component={AjustesScreen}
-        options={{ tabBarIcon: ({ color }) => <Text style={{ color }}>⚙️</Text> }}
+        options={{ 
+          tabBarIcon: ({ color }) => <AntDesign name="setting" size={24} color={color} /> 
+        }}
       />
     </Tab.Navigator>
   );
