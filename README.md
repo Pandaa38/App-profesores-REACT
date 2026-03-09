@@ -1,144 +1,176 @@
-# 📚 TutorApp — Seguimiento de Alumnos para Profesores
+# TutorApp — Gestión de alumnos para profesores particulares
 
-Aplicación multiplataforma (**Android** e **iOS**) diseñada para que profesores particulares gestionen a sus alumnos, controlen las horas impartidas, el precio por hora y el dinero acumulado pendiente de cobro.
+Aplicación móvil multiplataforma (Android e iOS) diseñada para que profesores particulares gestionen sus alumnos, controlen las horas impartidas, el precio por hora, el dinero pendiente de cobro y el historial de pagos.
 
-Desarrollada originalmente en concepto para KMP, pero construida con **React Native, Expo y TypeScript** para permitir un desarrollo ágil y compilación para iOS directamente desde Windows.
+Desarrollada con React Native, Expo y TypeScript.
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 | Función | Descripción |
 |---|---|
-| ➕ **Añadir alumnos** | Registra nuevos alumnos con nombre y precio por hora personalizado |
-| ✏️ **Editar alumnos** | Modifica el nombre o el precio/hora de un alumno existente |
-| 🗑️ **Eliminar alumnos** | Elimina un alumno con diálogo de confirmación (avisa si tiene deuda) |
-| ⏱️ **Sumar horas** | Botones rápidos de +1h, +0.5h y entrada personalizada (+Xh) |
-| 💰 **Deuda acumulada** | Cálculo automático: `horas pendientes × precio/hora` |
-| ✅ **Cobrar (reset)** | Registra el cobro en el historial y resetea las horas a 0 |
-| 📋 **Historial de cobros** | Lista cronológica de todos los cobros: alumno, monto, horas, fecha |
-| 📊 **Resumen global** | Tarjeta con total de alumnos, horas pendientes y deuda total |
-| ⚠️ **Confirmaciones** | Diálogos de confirmación para acciones destructivas (cobrar, eliminar) |
-| 📱 **Multiplataforma** | Funciona nativamente en Android e iOS |
+| Añadir alumnos | Registra nuevos alumnos con nombre y precio por hora |
+| Editar alumnos | Modifica el nombre, precio/hora u horas pendientes |
+| Eliminar alumnos | Elimina un alumno con diálogo de confirmación |
+| Sumar horas | Botones rápidos de +1h, +0.5h y entrada personalizada |
+| Deuda acumulada | Cálculo automático: horas pendientes x precio/hora |
+| Cobrar | Registra el cobro en el historial y resetea las horas a 0 |
+| Historial de cobros | Lista cronológica con alumno, monto, horas y fecha |
+| Filtros en historial | Filtrar por período, alumno y ordenación |
+| Resumen global | Total cobrado y horas totales en el historial |
+| Ajustes | Tema, moneda y duración por defecto configurables |
+| Confirmaciones | Diálogos de confirmación para acciones destructivas |
 
 ---
 
-## 🖼️ Pantallas
+## Pantallas
 
-### Pantalla de Alumnos
-- Tarjeta resumen superior con estadísticas globales
+### Alumnos
+- Tarjeta resumen con estadísticas globales (alumnos, horas, deuda total)
 - Lista de tarjetas con la información de cada alumno
-- Botones de acción: +1h, +0.5h, +Xh (personalizado) y Cobrar
-- Iconos de editar (✏️) y eliminar (🗑️) en cada tarjeta
-- FAB (+) para añadir nuevo alumno
-- Deuda destacada en rojo cuando es > 0, verde cuando está al día
+- Botones de acción: +1h, +0.5h, +Xh personalizado y Cobrar
+- Botones de editar y eliminar en cada tarjeta
+- FAB para añadir nuevo alumno
+- Deuda destacada en rojo cuando es mayor a 0
 
-### Pantalla de Historial
-- Resumen del total cobrado históricamente
-- Lista de todos los cobros realizados con:
-  - Nombre del alumno
-  - Monto cobrado
-  - Horas cobradas
-  - Fecha y hora del cobro
+### Historial
+- Total cobrado y horas totales filtrados dinámicamente
+- Lista de cobros con nombre, monto, horas y fecha
+- Filtros por período (todos, este mes, mes anterior, este año)
+- Filtro por alumno con dropdown
+- Ordenación por más recientes, más antiguos o mayor importe
+- Borrar historial completo con confirmación
 
-### Navegación
-- Barra de navegación inferior con 2 pestañas: **Alumnos** | **Historial**
+### Ajustes
+- Selector de tema (claro, oscuro, sistema)
+- Selector de moneda (EUR, USD, GBP)
+- Duración por defecto de las clases
+- Selección de idioma (próximamente)
+- Exportar CSV (próximamente)
+- Versión de la aplicación
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
-```text
-/TutorApp
-├── app/                  # Enrutamiento (Expo Router)
-│   ├── (tabs)/           # Pestañas de navegación principal
-│   │   ├── index.tsx     # Pantalla de Alumnos
-│   │   └── history.tsx   # Pantalla de Historial
-│   └── _layout.tsx       # Layout principal de la aplicación
-├── components/           # Componentes de UI reutilizables
-│   ├── AlumnoCard.tsx    # Tarjeta individual de alumno
-│   ├── ResumenItem.tsx   # Tarjetas de resumen global
-│   └── dialogs/          # Diálogos modulares (Material 3)
-├── store/                # Lógica de negocio y estado global
-│   └── useTutorStore.ts  # Estado con Zustand (equivalente al ViewModel)
-└── types/                # Interfaces TypeScript
-    └── index.ts          # Modelos de Alumno y PagoRegistro
+## Arquitectura del proyecto
+
+```
+App-profesores-REACT/
+├── App.tsx                        # Punto de entrada, navegacion y contextos
+├── app.json                       # Configuracion de Expo
+├── src/
+│   ├── navigation/
+│   │   └── TabNavigator.tsx       # Barra de navegacion inferior
+│   ├── screens/
+│   │   ├── AlumnosScreen.tsx      # Pantalla principal de alumnos
+│   │   ├── HistorialScreen.tsx    # Pantalla de historial de cobros
+│   │   └── AjustesScreen.tsx      # Pantalla de ajustes
+│   ├── components/
+│   │   ├── AlumnoCard.tsx         # Tarjeta de cada alumno
+│   │   ├── ResumenCard.tsx        # Tarjeta de resumen global
+│   │   ├── PagoCard.tsx           # Tarjeta de cada cobro en historial
+│   │   ├── FilterModal.tsx        # Modal de filtros del historial
+│   │   ├── FormAlumno.tsx         # Formulario de añadir/editar alumno
+│   │   ├── AddButton.tsx          # Boton flotante de añadir
+│   │   └── Header.tsx             # Cabecera reutilizable
+│   ├── hooks/
+│   │   ├── useAlumnos.ts          # Logica de gestion de alumnos
+│   │   ├── useHistorial.ts        # Logica de historial y filtros
+│   │   └── useAjustes.ts          # Logica de AsyncStorage
+│   ├── context/
+│   │   └── AjustesContext.tsx     # Contexto global de ajustes
+│   ├── database/
+│   │   ├── database.ts            # Inicializacion de SQLite
+│   │   ├── dataAlumnos.ts         # Queries de alumnos
+│   │   └── dataHistorial.ts       # Queries de historial y filtros
+│   └── type/
+│       └── types.ts               # Tipos TypeScript globales
 ```
 
-### Patrón de diseño
-- **Estado Global:** Zustand para manejar reactividad y lógica centralizada.
-- **UI:** React Native Paper para componentes consistentes con Material Design 3.
-- **Navegación:** Expo Router (basado en archivos).
+### Patron de diseño
+
+- **Base de datos:** SQLite con expo-sqlite para persistencia local
+- **Estado local:** React hooks (useState, useCallback)
+- **Estado global:** React Context para ajustes compartidos entre pantallas
+- **Navegacion:** React Navigation con Bottom Tab Navigator
+- **Persistencia de ajustes:** AsyncStorage
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack tecnologico
 
-| Tecnología | Propósito |
+| Tecnologia | Proposito |
 |---|---|
 | React Native | Framework principal |
-| Expo | Herramientas de desarrollo, compilación y testing |
-| TypeScript | Lenguaje tipado (seguridad y autocompletado) |
-| Zustand | Gestión del estado global (Ligero y potente) |
-| React Native Paper | Librería de UI (Material 3) |
-| Expo SQLite | Persistencia de datos local |
+| Expo | Herramientas de desarrollo y compilacion |
+| TypeScript | Tipado estatico |
+| Expo SQLite | Base de datos local |
+| AsyncStorage | Persistencia de ajustes |
+| React Navigation | Navegacion entre pantallas |
+| Expo Linear Gradient | Efectos visuales de difuminado |
+| Expo Vector Icons | Iconografia |
+| Expo Constants | Informacion de la aplicacion |
 
 ---
 
-## 🚀 Cómo ejecutar y probar
-
-### Requisitos previos
-- Node.js (LTS) instalado en tu equipo.
-- App **Expo Go** instalada en tu dispositivo físico (iOS o Android).
-
-### Iniciar el entorno de desarrollo
-
-Desde la terminal en la raíz del proyecto:
-```bash
-# Iniciar el servidor de Expo
-npx expo start
-```
-
-### Probar en el móvil (Sin necesidad de Mac)
-1. Asegúrate de que tu móvil y tu PC estén en la misma red Wi-Fi.
-2. Abre la app **Expo Go** en tu iPhone o Android.
-3. Escanea el código QR que aparece en la terminal.
-4. Cualquier cambio en el código se reflejará instantáneamente en tu móvil.
-
----
-
-## 🔧 Modelo de datos
+## Modelo de datos
 
 ### Alumno
 ```typescript
-export interface Alumno {
-    id: string;
-    nombre: string;
-    precioPorHora: number;
-    horasPendientes: number;
+type Alumno = {
+  id: number;
+  nombre: string;
+  precioPorHora: number;
+  horasPendientes: number;
 }
 ```
 
 ### PagoRegistro
 ```typescript
-export interface PagoRegistro {
-    id: string;
-    alumnoNombre: string;
-    montoCobrado: number;
-    horasCobradas: number;
-    fecha: string;       // Ej: "26/02/2026 14:30"
+type PagoRegistro = {
+  id: number;
+  alumnoId: number | null;   // null si el alumno fue eliminado
+  alumnoNombre: string;      // snapshot del nombre en el momento del cobro
+  horasCobradas: number;
+  montoCobrado: number;
+  fecha: string;             // formato ISO con hora local
+}
+```
+
+### Ajustes
+```typescript
+type Ajustes = {
+  tema: 'claro' | 'oscuro' | 'sistema';
+  moneda: '€' | '$' | '£';
+  duracion: 0.5 | 1 | 1.5 | 2;
 }
 ```
 
 ---
 
-## 🔮 Mejoras futuras
+## Como ejecutar
 
-- [ ] **Persistencia local** — Guardar datos con Expo SQLite o AsyncStorage
-- [ ] **Tema oscuro** — Soporte para modo oscuro automático
-- [ ] **Exportar datos** — Exportar historial a CSV o PDF
-- [ ] **Notificaciones** — Recordatorios de cobro pendiente
-- [ ] **Backup/Sync** — Sincronización en la nube (Firebase, Supabase)
-- [ ] **Búsqueda y filtros** — Buscar alumnos por nombre, filtrar historial por fecha
-- [ ] **Ordenar alumnos** — Por nombre, deuda o horas pendientes
-- [ ] **Estadísticas** — Gráficos de ingresos mensuales
+### Requisitos
+- Node.js LTS
+- App Expo Go en el dispositivo movil
 
+### Iniciar
+
+```bash
+npx expo start
+```
+
+Escanea el codigo QR con Expo Go. El dispositivo y el PC deben estar en la misma red Wi-Fi.
+
+---
+
+## Mejoras futuras
+
+- [ ] Tema oscuro funcional en toda la app
+- [ ] Seleccion de idioma
+- [ ] Exportar historial a CSV
+- [ ] Notificaciones de cobro pendiente
+- [ ] Estadisticas graficas de ingresos mensuales
+- [ ] Backup en la nube
+- [ ] Busqueda de alumnos por nombre
+- [ ] Ordenar alumnos por nombre, deuda u horas

@@ -3,9 +3,13 @@ import {
   View, Text, StyleSheet, Modal, TouchableOpacity,
   ScrollView, TouchableWithoutFeedback
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+
 import { Alumno } from '../type/types';
 import { FiltrosHistorial, FILTROS_DEFAULT, Periodo, Orden } from '../database/dataHistorial';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 type FilterModalProps = {
   visible: boolean;
@@ -61,7 +65,10 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         </View>
 
         {/* PERÍODO */}
-        <Text style={styles.seccionTitulo}>📅 Período</Text>
+        <View style={styles.seccionHeader}>
+          <Ionicons name="calendar-clear-outline" size={18} color="#374151" />
+          <Text style={styles.seccionTitulo}>Período</Text>
+        </View>
         <View style={styles.chips}>
           {periodos.map(p => (
             <TouchableOpacity
@@ -77,7 +84,10 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         </View>
 
         {/* ALUMNO */}
-        <Text style={styles.seccionTitulo}>👤 Alumno</Text>
+        <View style={styles.seccionHeader}>
+          <AntDesign name="user-switch" size={18} color="#374151" />
+          <Text style={styles.seccionTitulo}>Alumno</Text>
+        </View>
         <TouchableOpacity
           style={styles.dropdown}
           onPress={() => setDropdownAbierto(!dropdownAbierto)}
@@ -123,7 +133,10 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         )}
 
         {/* ORDENAR POR */}
-        <Text style={styles.seccionTitulo}>↕️ Ordenar por</Text>
+        <View style={styles.seccionHeader}>
+          <FontAwesome name="sort" size={18} color="#374151" />
+          <Text style={styles.seccionTitulo}>Ordenar por</Text>
+        </View>
         {ordenes.map(o => (
           <TouchableOpacity
             key={o.value}
@@ -176,11 +189,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#111827',
   },
+  seccionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 8,
+  },
   seccionTitulo: {
     fontSize: 14,
     fontWeight: '600',
     color: '#374151',
-    marginTop: 8,
   },
   chips: {
     flexDirection: 'row',
