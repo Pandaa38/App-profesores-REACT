@@ -1,45 +1,47 @@
+// src/theme/colores.ts
+
 export const temaClaro = {
   // Fondos
-  fondo:           '#F9FAFB',
+  fondo:           '#F8FAFC', // Gris muy pálido, más elegante que el gris puro
   tarjeta:         '#FFFFFF',
 
   // Textos
-  textoP:          '#111827',
-  textoS:          '#6B7280',
-  textoT:          '#9CA3AF',
+  textoP:          '#0F172A', // Slate 900 (Negro suave)
+  textoS:          '#64748B', // Slate 500
+  textoT:          '#94A3B8', // Slate 400
 
   // Bordes
-  borde:           '#E5E7EB',
+  borde:           '#E2E8F0', // Slate 200
 
-  // Accion principal
-  accion:          '#111827',
+  // Acción principal (El azul que pediste)
+  accion:          '#2563EB', // Blue 600
   accionTexto:     '#FFFFFF',
 
-  // Semanticos
-  deuda:           '#EF4444',
-  exito:           '#22C55E',
+  // Semánticos
+  deuda:           '#F43F5E', // Rose 500 (Rojo más moderno)
+  exito:           '#10B981', // Emerald 500 (Verde vibrante)
 };
 
 export const temaOscuro: Colores = {
   // Fondos
-  fondo:           '#111827',
-  tarjeta:         '#1F2937',
+  fondo:           '#0F172A', // Slate 900 (Fondo azul marino muy oscuro)
+  tarjeta:         '#1E293B', // Slate 800
 
   // Textos
-  textoP:          '#F9FAFB',
-  textoS:          '#9CA3AF',
-  textoT:          '#6B7280',
+  textoP:          '#F8FAFC',
+  textoS:          '#94A3B8',
+  textoT:          '#64748B',
 
   // Bordes
-  borde:           '#374151',
+  borde:           '#334155', // Slate 700
 
-  // Accion principal
-  accion:          '#F9FAFB',
-  accionTexto:     '#111827',
+  // Acción principal
+  accion:          '#3B82F6', // Blue 500 (Un azul un poco más claro para que resalte en oscuro)
+  accionTexto:     '#FFFFFF',
 
-  // Semanticos
-  deuda:           '#EF4444',
-  exito:           '#22C55E',
+  // Semánticos
+  deuda:           '#F43F5E',
+  exito:           '#10B981',
 };
 
 export type Colores = typeof temaClaro;
