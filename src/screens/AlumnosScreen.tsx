@@ -1,9 +1,8 @@
-import { useState } from 'react';
-
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { useState, useMemo } from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 import AlumnoCard from '../components/AlumnoCard';
 import AddButton from '../components/AddButton';
@@ -11,13 +10,17 @@ import FormularioAlumno from '../components/FormAlumno';
 import Header from '../components/Header';
 
 import { useAlumnos } from '../hooks/useAlumnos';
+import { useTheme } from '../theme/useTheme';
+import { Colores } from '../theme/colores';
 import { Alumno } from '../type/types';
 
-
-export default function App() {
- const [formVisible, setFormVisible] = useState(false);
+export default function AlumnosScreen() {
+  const [formVisible, setFormVisible] = useState(false);
   const [alumnoEditar, setAlumnoEditar] = useState<Alumno | undefined>(undefined);
   const { alumnos, handleCobrar, handleAddHoras, handleEliminar, handleAñadirAlumno, handleEditarAlumno } = useAlumnos();
+
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const onGuardar = (nombre: string, precioPorHora: number, horasPendientes?: number) => {
     if (alumnoEditar) {
@@ -38,7 +41,7 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
 
-        <StatusBar style="dark" />
+        <StatusBar style={c === c ? 'auto' : 'dark'} />
 
         {/* Cabecera minimalista */}
         <Header title="Mis Alumnos" />
@@ -55,16 +58,16 @@ export default function App() {
               onAddHoras={handleAddHoras}
               onCobrar={handleCobrar}
               onEliminar={handleEliminar}
-              onEditar={onEditar} 
+              onEditar={onEditar}
             />
           ))}
         </ScrollView>
 
-        {/* DEGRADADO INFERIOR (Efecto Tricount) */}
+        {/* DEGRADADO INFERIOR */}
         <LinearGradient
-          colors={['rgba(249, 250, 251, 0)', 'rgba(249, 250, 251, 1)']} // Funde hacia el color de fondo
+          colors={[`${c.fondo}00`, c.fondo]}
           style={styles.gradientBottom}
-          pointerEvents="none" // FUNDAMENTAL: Permite hacer clic "a través" del degradado
+          pointerEvents="none"
         />
 
         {/* BOTÓN FLOTANTE */}
@@ -81,38 +84,18 @@ export default function App() {
             setFormVisible(false);
           }}
         />
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB', // Un gris muy, muy claro (casi blanco) elegante
+    backgroundColor: c.fondo,
     width: '100%',
   },
-  // header: {
-  //   width: '100%',
-  //   height: 60,
-  //   backgroundColor: '#F9FAFB',
-  //   //flexDirection: 'row',
-  //   alignItems: 'center',
-  //   //justifyContent: 'space-between',
-  //   paddingHorizontal: 24,
-  //   zIndex: 1,
-  //   paddingTop: 10,
-  // },
-  // headerText: {
-  //   color: '#9CA3AF', // Gris suave para acciones secundarias
-  //   fontWeight: '500',
-  //   fontSize: 14,
-  // },
-  // headerTitle: {
-  //   color: '#111827', // Negro pizarra para el título
-  //   fontWeight: 'bold',
-  //   fontSize: 18,
-  // },
   scroll: {
     flex: 1,
     width: '100%',
@@ -120,19 +103,19 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: 'center',
     paddingVertical: 10,
-    paddingBottom: 140, // Mucho espacio para que la última tarjeta pase el botón flotante
+    paddingBottom: 140,
   },
   gradientBottom: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 120, // Altura del difuminado
+    height: 120,
   },
   fabContainer: {
     position: 'absolute',
-    bottom: 10, // Altura del botón desde abajo
-    //right: 20,
+    bottom: 10,
+    right: 20,
     alignSelf: 'center',
     zIndex: 10,
   },

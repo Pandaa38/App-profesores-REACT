@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   View, Text, StyleSheet, Modal, TouchableOpacity,
-  ScrollView, TouchableWithoutFeedback
+  TouchableWithoutFeedback
 } from 'react-native';
 
 import { Alumno } from '../type/types';
 import { FiltrosHistorial, FILTROS_DEFAULT, Periodo, Orden } from '../database/dataHistorial';
+import { useTheme } from '../theme/useTheme';
+import { Colores } from '../theme/colores';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -22,6 +24,9 @@ type FilterModalProps = {
 export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCerrar }: FilterModalProps) {
   const [filtrosLocales, setFiltrosLocales] = useState<FiltrosHistorial>(filtros);
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
+
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const alumnoSeleccionado = alumnos.find(a => a.id === filtrosLocales.alumnoId);
 
@@ -60,13 +65,13 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         <View style={styles.cabecera}>
           <Text style={styles.titulo}>Filtros</Text>
           <TouchableOpacity onPress={onCerrar}>
-            <AntDesign name="close" size={20} color="#111827" />
+            <AntDesign name="close" size={20} color={c.textoP} />
           </TouchableOpacity>
         </View>
 
         {/* PERÍODO */}
         <View style={styles.seccionHeader}>
-          <Ionicons name="calendar-clear-outline" size={18} color="#374151" />
+          <Ionicons name="calendar-clear-outline" size={18} color={c.textoS} />
           <Text style={styles.seccionTitulo}>Período</Text>
         </View>
         <View style={styles.chips}>
@@ -85,7 +90,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
 
         {/* ALUMNO */}
         <View style={styles.seccionHeader}>
-          <AntDesign name="user-switch" size={18} color="#374151" />
+          <AntDesign name="user-switch" size={18} color={c.textoS} />
           <Text style={styles.seccionTitulo}>Alumno</Text>
         </View>
         <TouchableOpacity
@@ -98,7 +103,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
           <AntDesign
             name={dropdownAbierto ? 'up' : 'down'}
             size={14}
-            color="#6B7280"
+            color={c.textoS}
           />
         </TouchableOpacity>
 
@@ -134,7 +139,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
 
         {/* ORDENAR POR */}
         <View style={styles.seccionHeader}>
-          <FontAwesome name="sort" size={18} color="#374151" />
+          <FontAwesome name="sort" size={18} color={c.textoS} />
           <Text style={styles.seccionTitulo}>Ordenar por</Text>
         </View>
         {ordenes.map(o => (
@@ -165,13 +170,13 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   fondo: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   panel: {
-    backgroundColor: '#fff',
+    backgroundColor: c.tarjeta,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
@@ -187,7 +192,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: c.textoP,
   },
   seccionHeader: {
     flexDirection: 'row',
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
   seccionTitulo: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: c.textoS,
   },
   chips: {
     flexDirection: 'row',
@@ -210,37 +215,37 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#fff',
+    borderColor: c.borde,
+    backgroundColor: c.tarjeta,
   },
   chipActivo: {
-    backgroundColor: '#111827',
-    borderColor: '#111827',
+    backgroundColor: c.accion,
+    borderColor: c.accion,
   },
   chipTexto: {
     fontSize: 13,
-    color: '#374151',
+    color: c.textoS,
   },
   chipTextoActivo: {
-    color: '#fff',
+    color: c.accionTexto,
   },
   dropdown: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.borde,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
   dropdownTexto: {
     fontSize: 14,
-    color: '#111827',
+    color: c.textoP,
   },
   dropdownLista: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.borde,
     borderRadius: 10,
     overflow: 'hidden',
     marginTop: -4,
@@ -249,18 +254,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: c.borde,
   },
   dropdownItemActivo: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: c.fondo,
   },
   dropdownItemTexto: {
     fontSize: 14,
-    color: '#374151',
+    color: c.textoS,
   },
   dropdownItemTextoActivo: {
     fontWeight: '600',
-    color: '#111827',
+    color: c.textoP,
   },
   radioFila: {
     flexDirection: 'row',
@@ -273,7 +278,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#111827',
+    borderColor: c.accion,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -281,11 +286,11 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#111827',
+    backgroundColor: c.accion,
   },
   radioTexto: {
     fontSize: 14,
-    color: '#374151',
+    color: c.textoS,
   },
   botones: {
     flexDirection: 'row',
@@ -297,24 +302,24 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.borde,
     alignItems: 'center',
   },
   textoRestablecer: {
     fontSize: 15,
-    color: '#374151',
+    color: c.textoS,
     fontWeight: '500',
   },
   botonAplicar: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    backgroundColor: '#111827',
+    backgroundColor: c.accion,
     alignItems: 'center',
   },
   textoAplicar: {
     fontSize: 15,
-    color: '#fff',
+    color: c.accionTexto,
     fontWeight: '600',
   },
 });

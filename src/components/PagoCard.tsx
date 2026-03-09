@@ -1,6 +1,12 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useMemo } from 'react'
 import { PagoRegistro } from '../type/types';
 import { AntDesign } from '@expo/vector-icons';
+
+import { useAjustesContext } from '../context/AjustesContext';
+
+import { useTheme } from '../theme/useTheme';
+import { Colores } from '../theme/colores';
 
 type PagoCardProps = {
   pago: PagoRegistro;
@@ -9,7 +15,7 @@ type PagoCardProps = {
 const formatearFecha = (fecha: string) => {
   const hoy = new Date();
   const fechaPago = new Date(fecha);
-
+ 
   const esHoy = hoy.toDateString() === fechaPago.toDateString();
   if (esHoy) return 'Hoy';
 
@@ -24,6 +30,12 @@ const formatearFecha = (fecha: string) => {
 };
 
 export default function PagoCard({ pago }: PagoCardProps) {
+
+  const { ajustes } = useAjustesContext();
+  
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   return (
     <View style={styles.card}>
 
@@ -33,7 +45,7 @@ export default function PagoCard({ pago }: PagoCardProps) {
       </View>
 
       <View style={styles.derecha}>
-        <Text style={styles.monto}>{pago.montoCobrado.toFixed(2)}€</Text>
+        <Text style={styles.monto}>{pago.montoCobrado.toFixed(2)}{ajustes.moneda}</Text>
         <Text style={styles.fecha}>{formatearFecha(pago.fecha)}</Text>
       </View>
 
@@ -45,9 +57,9 @@ export default function PagoCard({ pago }: PagoCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: c.tarjeta,
     paddingHorizontal: 20,
     paddingVertical: 14,
     flexDirection: 'row',
@@ -56,12 +68,12 @@ const styles = StyleSheet.create({
     width: '92%',
     borderRadius: 10,
     marginVertical: 4,
-    // Sombra iOS
+    
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06,
     shadowRadius: 3,
-    // Sombra Android
+
     elevation: 2,
   },
   izquierda: {
@@ -75,19 +87,19 @@ const styles = StyleSheet.create({
   nombre: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#111827',
+    color: c.textoP,
   },
   horas: {
     fontSize: 13,
-    color: '#9CA3AF',
+    color: c.textoT,
   },
   monto: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#111827',
+    color: c.textoP,
   },
   fecha: {
     fontSize: 13,
-    color: '#9CA3AF',
+    color: c.textoT,
   },
 });

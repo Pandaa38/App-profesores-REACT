@@ -18,7 +18,7 @@ export function useHistorial() {
   };
 
   const handleVaciarHistorial = () => {
-    vaciarHistorial();
+    vaciarHistorial(filtros);
     setFiltros(FILTROS_DEFAULT);
     cargarHistorial(FILTROS_DEFAULT);
   };

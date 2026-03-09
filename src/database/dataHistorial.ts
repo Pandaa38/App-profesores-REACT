@@ -81,8 +81,9 @@ export function addPago(alumnoId: number, alumnoNombre: string, horasCobradas: n
   );
 }
 
-export function vaciarHistorial(): void {
-  db.runSync(`DELETE FROM pagos;`);
+export function vaciarHistorial(filtros: FiltrosHistorial = FILTROS_DEFAULT): void {
+  const { where, params } = buildQuery(filtros);
+  db.runSync(`DELETE FROM pagos ${where};`, params);
 }
 
 export function getPagosPorAlumno(alumnoId: number): PagoRegistro[] {

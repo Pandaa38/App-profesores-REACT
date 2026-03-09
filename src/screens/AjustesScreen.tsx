@@ -1,23 +1,29 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { useMemo } from 'react';
 import Constants from 'expo-constants';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 import Header from '../components/Header';
 import { useAjustesContext } from '../context/AjustesContext';
-import { Tema, Moneda, Duracion } from '../hooks/useAjustes';
+import { useTheme } from '../theme/useTheme';
+import { Colores } from '../theme/colores';
+import { Tema, Moneda } from '../hooks/useAjustes';
 
 const mostrarProximamente = (funcion: string) => {
   Alert.alert(
-    '🚧 Próximamente',
+    'Próximamente',
     `${funcion} estará disponible en una próxima versión.`,
     [{ text: 'OK' }]
   );
 };
 
 export default function AjustesScreen() {
-  const { ajustes, actualizarTema, actualizarMoneda, actualizarDuracion } = useAjustesContext();
+  const { ajustes, actualizarTema, actualizarMoneda } = useAjustesContext();
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const temas: { label: string; value: Tema }[] = [
     { label: 'Claro', value: 'claro' },
@@ -31,12 +37,12 @@ export default function AjustesScreen() {
     { label: '£', value: '£' },
   ];
 
-  const duraciones: { label: string; value: Duracion }[] = [
-    { label: '0.5h', value: 0.5 },
-    { label: '1h', value: 1 },
-    { label: '1.5h', value: 1.5 },
-    { label: '2h', value: 2 },
-  ];
+  // const duraciones: { label: string; value: Duracion }[] = [
+  //   { label: '0.5h', value: 0.5 },
+  //   { label: '1h', value: 1 },
+  //   { label: '1.5h', value: 1.5 },
+  //   { label: '2h', value: 2 },
+  // ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,8 +94,7 @@ export default function AjustesScreen() {
             </View>
           </View>
 
-          <View style={styles.divisor} />
-
+          {/* <View style={styles.divisor} />
           <View style={styles.opcionFila}>
             <Text style={styles.opcionLabel}>Duración por defecto</Text>
             <View style={styles.chips}>
@@ -105,7 +110,7 @@ export default function AjustesScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-          </View>
+          </View> */}
         </View>
 
         {/* IDIOMA */}
@@ -115,7 +120,8 @@ export default function AjustesScreen() {
             style={styles.botonProximamente}
             onPress={() => mostrarProximamente('Selección de idioma')}
           >
-            <Text style={styles.botonProximamenteTexto}>🌐 Seleccionar idioma</Text>
+            <Ionicons name="language-outline" size={20} color={c.textoP} />
+            <Text style={styles.botonProximamenteTexto}>Seleccionar idioma</Text>
             <Text style={styles.proximamenteTag}>Próximamente</Text>
           </TouchableOpacity>
         </View>
@@ -127,7 +133,8 @@ export default function AjustesScreen() {
             style={styles.botonProximamente}
             onPress={() => mostrarProximamente('Exportar CSV')}
           >
-            <Text style={styles.botonProximamenteTexto}>📄 Exportar CSV</Text>
+            <AntDesign name="export" size={20} color={c.textoP} />
+            <Text style={styles.botonProximamenteTexto}>Exportar CSV</Text>
             <Text style={styles.proximamenteTag}>Próximamente</Text>
           </TouchableOpacity>
         </View>
@@ -146,7 +153,7 @@ export default function AjustesScreen() {
       </ScrollView>
 
       <LinearGradient
-        colors={['rgba(249, 250, 251, 0)', 'rgba(249, 250, 251, 1)']}
+        colors={[`${c.fondo}00`, c.fondo]}
         style={styles.gradientBottom}
         pointerEvents="none"
       />
@@ -155,10 +162,10 @@ export default function AjustesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: c.fondo,
   },
   scroll: {
     flex: 1,
@@ -172,13 +179,13 @@ const styles = StyleSheet.create({
   seccionTitulo: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#9CA3AF',
+    color: c.textoT,
     marginTop: 16,
     marginLeft: 4,
     letterSpacing: 0.8,
   },
   bloque: {
-    backgroundColor: '#fff',
+    backgroundColor: c.tarjeta,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
   },
   opcionLabel: {
     fontSize: 15,
-    color: '#111827',
+    color: c.textoP,
     fontWeight: '500',
   },
   chips: {
@@ -211,42 +218,43 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#fff',
+    borderColor: c.borde,
+    backgroundColor: c.tarjeta,
   },
   chipActivo: {
-    backgroundColor: '#111827',
-    borderColor: '#111827',
+    backgroundColor: c.accion,
+    borderColor: c.accion,
   },
   chipTexto: {
     fontSize: 13,
-    color: '#374151',
+    color: c.textoS,
   },
   chipTextoActivo: {
-    color: '#fff',
+    color: c.accionTexto,
   },
   divisor: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: c.borde,
   },
   botonProximamente: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 10,
   },
   botonProximamenteTexto: {
+    flex: 1,
     fontSize: 15,
-    color: '#111827',
+    color: c.textoP,
     fontWeight: '500',
   },
   proximamenteTag: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: c.textoT,
     fontStyle: 'italic',
   },
   versionTexto: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: c.textoT,
   },
   gradientBottom: {
     position: 'absolute',

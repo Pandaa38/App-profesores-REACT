@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -10,11 +10,17 @@ import Header from '../components/Header';
 import FilterModal from '../components/FilterModal';
 import { useHistorial } from '../hooks/useHistorial';
 import { useAlumnos } from '../hooks/useAlumnos';
+import { useTheme } from '../theme/useTheme';
+import { useAjustesContext } from '../context/AjustesContext';
+import { Colores } from '../theme/colores';
 
 export default function HistorialScreen() {
   const { pagos, resumen, filtros, cargarHistorial, aplicarFiltros, handleVaciarHistorial } = useHistorial();
   const { alumnos } = useAlumnos();
+  const { ajustes } = useAjustesContext();
   const [filtroVisible, setFiltroVisible] = useState(false);
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   useFocusEffect(
     useCallback(() => {
@@ -23,17 +29,16 @@ export default function HistorialScreen() {
   );
 
   const handleBorrarHistorial = () => {
-    Alert.alert(
-      'Borrar historial',
-      '¿Estás seguro? Esta acción no se puede deshacer.',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Borrar', style: 'destructive', onPress: handleVaciarHistorial },
-      ]
-    );
+    const mensaje = filtrosActivos
+      ? '¿Eliminar los registros filtrados? El resto del historial se mantendrá.'
+      : '¿Estás seguro? Esta acción eliminará todo el historial.';
+
+    Alert.alert('Borrar historial', mensaje, [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Borrar', style: 'destructive', onPress: handleVaciarHistorial },
+    ]);
   };
 
-  // Si hay filtros activos, el icono de filtrar se marca en negro
   const filtrosActivos =
     filtros.periodo !== 'todos' ||
     filtros.alumnoId !== null ||
@@ -47,18 +52,18 @@ export default function HistorialScreen() {
       {/* Resumen total + botones */}
       <View style={styles.resumenContainer}>
         <View style={styles.resumenTextos}>
-          <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}€</Text>
+          <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}{ajustes.moneda}</Text>
           <Text style={styles.resumenHoras}>{resumen.totalHoras}h totales</Text>
         </View>
         <View style={styles.resumenBotones}>
           <TouchableOpacity onPress={handleBorrarHistorial}>
-            <AntDesign name="delete" size={22} color="#9CA3AF" />
+            <AntDesign name="delete" size={22} color={c.textoT} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.botonFiltrar, filtrosActivos && styles.botonFiltrarActivo]}
             onPress={() => setFiltroVisible(true)}
           >
-            <AntDesign name="filter" size={16} color={filtrosActivos ? '#fff' : '#111827'} />
+            <AntDesign name="filter" size={16} color={filtrosActivos ? c.accionTexto : c.textoP} />
             <Text style={[styles.textoFiltrar, filtrosActivos && styles.textoFiltrarActivo]}>
               Filtrar
             </Text>
@@ -84,7 +89,7 @@ export default function HistorialScreen() {
       </ScrollView>
 
       <LinearGradient
-        colors={['rgba(249, 250, 251, 0)', 'rgba(249, 250, 251, 1)']}
+        colors={[`${c.fondo}00`, c.fondo]}
         style={styles.gradientBottom}
         pointerEvents="none"
       />
@@ -101,10 +106,10 @@ export default function HistorialScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: c.fondo,
   },
   resumenContainer: {
     paddingHorizontal: 24,
@@ -119,11 +124,11 @@ const styles = StyleSheet.create({
   resumenMonto: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#111827',
+    color: c.textoP,
   },
   resumenHoras: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: c.textoT,
     marginTop: 2,
   },
   resumenBotones: {
@@ -136,26 +141,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.borde,
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
   botonFiltrarActivo: {
-    backgroundColor: '#111827',
-    borderColor: '#111827',
+    backgroundColor: c.accion,
+    borderColor: c.accion,
   },
   textoFiltrar: {
     fontSize: 13,
-    color: '#111827',
+    color: c.textoP,
     fontWeight: '500',
   },
   textoFiltrarActivo: {
-    color: '#fff',
+    color: c.accionTexto,
   },
   separador: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: c.borde,
     marginHorizontal: 16,
   },
   scroll: {
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
     paddingBottom: 140,
   },
   sinHistorial: {
-    color: '#9CA3AF',
+    color: c.textoT,
     fontSize: 16,
     marginTop: 40,
   },

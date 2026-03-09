@@ -1,6 +1,8 @@
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Alumno } from '../type/types';
+import { useTheme } from '../theme/useTheme';
+import { Colores } from '../theme/colores';
 
 type FormAlumnoProps = {
   visible: boolean;
@@ -14,25 +16,23 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
   const [precio, setPrecio] = useState('');
   const [horas, setHoras] = useState('');
 
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   useEffect(() => {
-    // Siempre vaciamos los campos al abrir el modal, tanto para crear como para editar
     setNombre('');
     setPrecio('');
     setHoras('');
   }, [alumnoEditar, visible]);
 
   const handleGuardar = () => {
-    // Si el usuario no escribe nada, usamos el valor que ya tenía el alumno
     const nombreFinal = nombre.trim() !== '' ? nombre : (alumnoEditar ? alumnoEditar.nombre : '');
     const precioFinal = precio.trim() !== '' ? parseFloat(precio) : (alumnoEditar ? alumnoEditar.precioPorHora : NaN);
     const horasFinal = horas.trim() !== '' ? parseFloat(horas) : (alumnoEditar ? alumnoEditar.horasPendientes : undefined);
 
-    // Validamos: si es un alumno nuevo, exigimos nombre y precio. Si es edición, permitimos que queden como estaban.
     if (!alumnoEditar && (!nombreFinal || isNaN(precioFinal))) return;
 
     onGuardar(nombreFinal, precioFinal, horasFinal);
-    
-    // Limpiamos al salir
     setNombre('');
     setPrecio('');
     setHoras('');
@@ -49,24 +49,26 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
 
           <TextInput
             style={styles.input}
-            // Muestra el nombre actual en el placeholder si estamos editando
-            placeholder={alumnoEditar ? `Nombre: ${alumnoEditar.nombre} (opcional)` : "Nombre"}
+            placeholder={alumnoEditar ? `Nombre: ${alumnoEditar.nombre} (opcional)` : 'Nombre'}
+            placeholderTextColor={c.textoT}
             value={nombre}
             onChangeText={setNombre}
           />
 
           <TextInput
             style={styles.input}
-            placeholder={alumnoEditar ? `Precio: ${alumnoEditar.precioPorHora}€ (opcional)` : "Precio por hora (€)"}
+            placeholder={alumnoEditar ? `Precio: ${alumnoEditar.precioPorHora}€ (opcional)` : 'Precio por hora (€)'}
+            placeholderTextColor={c.textoT}
             value={precio}
             onChangeText={setPrecio}
             keyboardType="numeric"
           />
-          
+
           {alumnoEditar && (
             <TextInput
               style={styles.input}
               placeholder={`Horas pendientes: ${alumnoEditar.horasPendientes} (opcional)`}
+              placeholderTextColor={c.textoT}
               value={horas}
               onChangeText={setHoras}
               keyboardType="numeric"
@@ -88,7 +90,7 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   fondo: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   formulario: {
-    backgroundColor: '#fff',
+    backgroundColor: c.tarjeta,
     borderRadius: 12,
     padding: 24,
     width: '85%',
@@ -106,14 +108,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#333',
+    color: c.textoP,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: c.borde,
     borderRadius: 8,
     padding: 10,
     fontSize: 14,
+    color: c.textoP,
+    backgroundColor: c.fondo,
   },
   botones: {
     flexDirection: 'row',
@@ -125,17 +129,17 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   textoCancelar: {
-    color: '#666',
+    color: c.textoS,
     fontWeight: '600',
   },
   botonGuardar: {
-    backgroundColor: '#111827', // Le pongo tu color pizarra oscuro para que quede más elegante
+    backgroundColor: c.accion,
     padding: 10,
     borderRadius: 8,
     paddingHorizontal: 20,
   },
   textoGuardar: {
-    color: '#fff',
+    color: c.accionTexto,
     fontWeight: '600',
   },
 });

@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
+import { useTheme } from '../theme/useTheme';
+import { Colores } from '../theme/colores';
 
 interface HeaderProps {
   title: string;
@@ -7,6 +9,9 @@ interface HeaderProps {
 }
 
 export default function Header({ title, rightActions }: HeaderProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   return (
     <View style={styles.header}>
       <Text style={styles.headerTitle}>{title}</Text>
@@ -19,19 +24,17 @@ export default function Header({ title, rightActions }: HeaderProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Colores) => StyleSheet.create({
   header: {
     width: '100%',
     height: 60,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: c.fondo,
     alignItems: 'center',
     justifyContent: 'center',
-    //paddingTop: 10,
     zIndex: 1,
   },
   headerTitle: {
-    color: '#111827',
-    //fontWeight: 'bold',
+    color: c.textoP,
     fontSize: 18,
   },
   rightActions: {
