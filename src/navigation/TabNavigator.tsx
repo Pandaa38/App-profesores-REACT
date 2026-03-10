@@ -15,33 +15,40 @@ export default function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: c.accion,
         tabBarInactiveTintColor: c.textoT,
         tabBarStyle: {
           backgroundColor: c.fondo,
           borderTopColor: c.borde,
         },
-      }}
-    >
+      }} >
+        
       <Tab.Screen
         name="Alumnos"
         component={AlumnosScreen}
         options={{
-          tabBarIcon: ({ color }) => <AntDesign name="user" size={24} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="user" size={focused ? 26 : 23} color={color} />
+          ),
         }}
       />
       <Tab.Screen
         name="Historial"
         component={HistorialScreen}
         options={{
-          tabBarIcon: ({ color }) => <AntDesign name="history" size={24} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="history" size={focused ? 26 : 23} color={color} />
+          ),
         }}
       />
       <Tab.Screen
         name="Ajustes"
         component={AjustesScreen}
         options={{
-          tabBarIcon: ({ color }) => <AntDesign name="setting" size={24} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="setting" size={focused ? 26 : 23} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>

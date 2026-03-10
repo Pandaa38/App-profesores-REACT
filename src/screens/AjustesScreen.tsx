@@ -10,6 +10,7 @@ import Header from '../components/Header';
 import { useAjustesContext } from '../context/AjustesContext';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
+import { Fonts } from '../theme/fonts';
 import { Tema, Moneda } from '../hooks/useAjustes';
 
 const mostrarProximamente = (funcion: string) => {
@@ -178,7 +179,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   seccionTitulo: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: Fonts.semibold,
     color: c.textoT,
     marginTop: 16,
     marginLeft: 4,
@@ -206,7 +207,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   opcionLabel: {
     fontSize: 15,
     color: c.textoP,
-    fontWeight: '500',
+    fontFamily: Fonts.medium,
   },
   chips: {
     flexDirection: 'row',
@@ -227,9 +228,11 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   chipTexto: {
     fontSize: 13,
+    fontFamily: Fonts.regular,
     color: c.textoS,
   },
   chipTextoActivo: {
+    fontFamily: Fonts.medium,
     color: c.accionTexto,
   },
   divisor: {
@@ -245,7 +248,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     flex: 1,
     fontSize: 15,
     color: c.textoP,
-    fontWeight: '500',
+    fontFamily: Fonts.medium,
   },
   proximamenteTag: {
     fontSize: 12,
@@ -254,6 +257,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   versionTexto: {
     fontSize: 14,
+    fontFamily: Fonts.regular,
     color: c.textoT,
   },
   gradientBottom: {

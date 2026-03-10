@@ -166,11 +166,23 @@ Escanea el codigo QR con Expo Go. El dispositivo y el PC deben estar en la misma
 
 ## Mejoras futuras
 
-- [ ] Tema oscuro funcional en toda la app
 - [ ] Seleccion de idioma
 - [ ] Exportar historial a CSV
 - [ ] Notificaciones de cobro pendiente
 - [ ] Estadisticas graficas de ingresos mensuales
-- [ ] Backup en la nube
 - [ ] Busqueda de alumnos por nombre
 - [ ] Ordenar alumnos por nombre, deuda u horas
+
+---
+
+## Mejoras futuras visuales
+
+| Prioridad	| Mejora | |
+| --- | --- | --- | 
+| 1	| Feedback háptico (expo-haptics) | * | 
+| 2	| Empty State en AlumnosScreen | * |
+| 3	| Menú tres puntos en AlumnoCard (Editar/Eliminar) |
+| 4	| tabBarShowLabel: false en TabNavigator | * |
+| 5	| Subir sombras ligeramente | * | 
+| 6	| Tipografía personalizada (Inter) | * |
+| 7	| Header con blur al scroll | * |

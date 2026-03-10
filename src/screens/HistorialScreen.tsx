@@ -13,6 +13,7 @@ import { useAlumnos } from '../hooks/useAlumnos';
 import { useTheme } from '../theme/useTheme';
 import { useAjustesContext } from '../context/AjustesContext';
 import { Colores } from '../theme/colores';
+import { Fonts } from '../theme/fonts';
 
 export default function HistorialScreen() {
   const { pagos, resumen, filtros, cargarHistorial, aplicarFiltros, handleVaciarHistorial } = useHistorial();
@@ -123,11 +124,12 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   resumenMonto: {
     fontSize: 36,
-    fontWeight: 'bold',
+    fontFamily: Fonts.bold,
     color: c.textoP,
   },
   resumenHoras: {
     fontSize: 14,
+    fontFamily: Fonts.regular,
     color: c.textoT,
     marginTop: 2,
   },
@@ -153,7 +155,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   textoFiltrar: {
     fontSize: 13,
     color: c.textoP,
-    fontWeight: '500',
+    fontFamily: Fonts.medium,
   },
   textoFiltrarActivo: {
     color: c.accionTexto,
@@ -175,6 +177,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   sinHistorial: {
     color: c.textoT,
     fontSize: 16,
+    fontFamily: Fonts.regular,
     marginTop: 40,
   },
   gradientBottom: {

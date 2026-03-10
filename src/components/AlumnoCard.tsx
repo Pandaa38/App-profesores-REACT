@@ -5,6 +5,14 @@ import { AntDesign } from '@expo/vector-icons';
 import { useAjustesContext } from '../context/AjustesContext';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
+import { Fonts } from '../theme/fonts';
+
+import { 
+  notificationAsync, 
+  NotificationFeedbackType, 
+  impactAsync, 
+  ImpactFeedbackStyle 
+} from 'expo-haptics';;
 
 type AlumnoCardProps = {
   alumno: Alumno;
@@ -21,19 +29,15 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, o
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const confirmarEliminacion = () => {
-    if (Platform.OS === 'web') {
-      const confirmado = window.confirm(`¿Estás seguro de que quieres eliminar a ${alumno.nombre}?`);
-      if (confirmado) onEliminar(alumno);
-    } else {
-      Alert.alert(
-        'Confirmar eliminación',
-        `¿Eliminar a ${alumno.nombre}?`,
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Eliminar', style: 'destructive', onPress: () => onEliminar(alumno) }
-        ]
-      );
-    }
+    notificationAsync(NotificationFeedbackType.Warning);
+    Alert.alert(
+      'Confirmar eliminación',
+      `¿Eliminar a ${alumno.nombre}?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Eliminar', style: 'destructive', onPress: () => onEliminar(alumno) }
+      ]
+    );
   };
 
   return (
@@ -70,20 +74,35 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, o
       {/* BOTONERA */}
       <View style={styles.filaBotones}>
         <View style={styles.grupoBotonesHoras}>
-          <TouchableOpacity style={styles.botonSecundario} onPress={() => onAddHoras(alumno, 0.5)}>
+
+          <TouchableOpacity 
+          style={styles.botonSecundario} 
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            onAddHoras(alumno, 0.5);
+          }}>
             <Text style={styles.textoBotonSecundario}>+0.5h</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.botonSecundario} onPress={() => onAddHoras(alumno, 1)}>
+
+          <TouchableOpacity style={styles.botonSecundario} onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Light);
+            onAddHoras(alumno, 1);
+          }}>
             <Text style={styles.textoBotonSecundario}>+1h</Text>
           </TouchableOpacity>
+
           <TouchableOpacity style={styles.botonSecundario} onPress={() => onEditar(alumno)}>
             <AntDesign name="edit" size={20} color={c.textoS} />
           </TouchableOpacity>
+
         </View>
 
         <TouchableOpacity
           style={[styles.botonPrincipal, deudaTotal === 0 && styles.botonDesactivado]}
-          onPress={() => onCobrar(alumno)}
+          onPress={() => {
+            impactAsync(ImpactFeedbackStyle.Medium);
+            onCobrar(alumno);
+          }}
           disabled={deudaTotal === 0}
         >
           <Text style={styles.textoBotonPrincipal}>Cobrar</Text>
@@ -98,23 +117,23 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   card: {
     backgroundColor: c.tarjeta,
     borderRadius: 16,
-    padding: 20,
-    marginVertical: 8,
+    padding: 14,
+    marginVertical: 6,
     marginHorizontal: '5%',
     width: '90%',
     borderWidth: 1,
     borderColor: c.borde,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 8,
+    elevation: 3,
+    shadowColor: '#2563EB',   // azul Slate, en vez de negro puro
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
   },
   cabecera: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   contenedorDerecha: {
     flexDirection: 'row',
@@ -123,13 +142,13 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   nombre: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: Fonts.bold,
     color: c.textoP,
   },
   tarifa: {
     fontSize: 13,
     color: c.textoS,
-    fontWeight: '600',
+    fontFamily: Fonts.semibold,
     backgroundColor: c.fondo,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -142,8 +161,8 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: c.fondo,
     borderRadius: 12,
-    paddingVertical: 14,
-    marginBottom: 16,
+    paddingVertical: 10,
+    marginBottom: 10,
   },
   cajaDato: {
     flex: 1,
@@ -155,13 +174,13 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     marginVertical: 4,
   },
   numeroGrande: {
-    fontSize: 28,
-    fontWeight: '800',
+    fontSize: 24,
+    fontFamily: Fonts.bold,
     color: c.textoP,
   },
   unidades: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: Fonts.semibold,
     color: c.textoT,
   },
   textoDeuda: {
@@ -172,7 +191,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     color: c.textoT,
     textTransform: 'uppercase',
     marginTop: 4,
-    fontWeight: '700',
+    fontFamily: Fonts.bold,
     letterSpacing: 0.5,
   },
   filaBotones: {
@@ -186,24 +205,24 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   botonSecundario: {
     backgroundColor: c.fondo,
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 10,
   },
   textoBotonSecundario: {
     color: c.textoS,
-    fontWeight: '700',
+    fontFamily: Fonts.bold,
     fontSize: 14,
   },
   botonPrincipal: {
     backgroundColor: c.accion,
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 24,
     borderRadius: 10,
   },
   textoBotonPrincipal: {
     color: c.accionTexto,
-    fontWeight: '700',
+    fontFamily: Fonts.bold,
     fontSize: 14,
   },
   botonDesactivado: {

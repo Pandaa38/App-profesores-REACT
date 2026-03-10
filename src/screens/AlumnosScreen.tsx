@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { useState, useMemo, useRef } from 'react';
+import { StyleSheet, View, Animated, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,7 @@ import AlumnoCard from '../components/AlumnoCard';
 import AddButton from '../components/AddButton';
 import FormularioAlumno from '../components/FormAlumno';
 import Header from '../components/Header';
+import EmptyState from '../components/EmptyState';
 
 import { useAlumnos } from '../hooks/useAlumnos';
 import { useTheme } from '../theme/useTheme';
@@ -21,6 +22,7 @@ export default function AlumnosScreen() {
 
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const onGuardar = (nombre: string, precioPorHora: number, horasPendientes?: number) => {
     if (alumnoEditar) {
@@ -44,23 +46,32 @@ export default function AlumnosScreen() {
         <StatusBar style={c === c ? 'auto' : 'dark'} />
 
         {/* Cabecera minimalista */}
-        <Header title="Mis Alumnos" />
+        <Header title="Mis Alumnos" scrollY={scrollY} />
 
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, alumnos.length === 0 && styles.scrollVacio]}
           showsVerticalScrollIndicator={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
         >
-          {alumnos.map(alumno => (
-            <AlumnoCard
-              key={alumno.id}
-              alumno={alumno}
-              onAddHoras={handleAddHoras}
-              onCobrar={handleCobrar}
-              onEliminar={handleEliminar}
-              onEditar={onEditar}
-            />
-          ))}
+          {alumnos.length === 0 ? (
+            <EmptyState />
+          ) : (
+            alumnos.map(alumno => (
+              <AlumnoCard
+                key={alumno.id}
+                alumno={alumno}
+                onAddHoras={handleAddHoras}
+                onCobrar={handleCobrar}
+                onEliminar={handleEliminar}
+                onEditar={onEditar}
+              />
+            ))
+          )}
         </ScrollView>
 
         {/* DEGRADADO INFERIOR */}
@@ -104,6 +115,12 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingBottom: 140,
+  },
+  scrollVacio: {
+  flexGrow: 1,
+  alignItems: 'center',
+  paddingVertical: 10,
+  paddingBottom: 140,
   },
   gradientBottom: {
     position: 'absolute',

@@ -7,6 +7,7 @@ import { useAjustesContext } from '../context/AjustesContext';
 
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
+import { Fonts } from '../theme/fonts';
 
 type PagoCardProps = {
   pago: PagoRegistro;
@@ -86,20 +87,22 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   },
   nombre: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: Fonts.semibold,
     color: c.textoP,
   },
   horas: {
     fontSize: 13,
+    fontFamily: Fonts.regular,
     color: c.textoT,
   },
   monto: {
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: Fonts.semibold,
     color: c.textoP,
   },
   fecha: {
     fontSize: 13,
+    fontFamily: Fonts.regular,
     color: c.textoT,
   },
 });
