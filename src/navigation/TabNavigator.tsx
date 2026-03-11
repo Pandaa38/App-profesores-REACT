@@ -1,18 +1,26 @@
+import { useColorScheme } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 
 import AlumnosScreen from '../screens/AlumnosScreen';
 import HistorialScreen from '../screens/HistorialScreen';
 import AjustesScreen from '../screens/AjustesScreen';
 import { useTheme } from '../theme/useTheme';
+import { useAjustesContext } from '../context/AjustesContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   const c = useTheme();
+  const { ajustes } = useAjustesContext();
+  const sistemaOscuro = useColorScheme() === 'dark';
+  const esOscuro = ajustes.tema === 'oscuro' || (ajustes.tema === 'sistema' && sistemaOscuro);
 
   return (
-    <Tab.Navigator
+    <>
+      <StatusBar style={esOscuro ? 'light' : 'dark'} backgroundColor={c.fondo} />
+      <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -52,5 +60,6 @@ export default function TabNavigator() {
         }}
       />
     </Tab.Navigator>
+    </>
   );
 }

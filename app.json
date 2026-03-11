@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "App-profesores-REACT",
-    "slug": "App-profesores-REACT",
+    "name": "TutorApp",
+    "slug": "TutorApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +13,11 @@
       "backgroundColor": "#F8FAFC"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pandaa38.TutorApp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,18 +26,20 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.pandaa38.AppprofesoresREACT"
+      "package": "com.pandaa38.TutorApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-sqlite",
-      "expo-font"
+      "expo-font",
+      "expo-localization"
     ],
+    "owner": "pandaa38",
     "extra": {
       "eas": {
-        "projectId": "f8efe962-1b44-4b4e-b023-e3e5bebd5bf5"
+        "projectId": "58fa57c4-218e-4528-bc21-01f22f9cbbc2"
       }
     }
   }

@@ -2,7 +2,6 @@ import { useState, useMemo, useRef } from 'react';
 import { StyleSheet, View, Animated, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
 
 import AlumnoCard from '../components/AlumnoCard';
 import AddButton from '../components/AddButton';
@@ -14,6 +13,7 @@ import { useAlumnos } from '../hooks/useAlumnos';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
 import { Alumno } from '../type/types';
+import { useTranslation } from 'react-i18next';
 
 export default function AlumnosScreen() {
   const [formVisible, setFormVisible] = useState(false);
@@ -21,6 +21,7 @@ export default function AlumnosScreen() {
   const { alumnos, handleCobrar, handleAddHoras, handleEliminar, handleAñadirAlumno, handleEditarAlumno } = useAlumnos();
 
   const c = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -43,10 +44,8 @@ export default function AlumnosScreen() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
 
-        <StatusBar style={c === c ? 'auto' : 'dark'} />
-
         {/* Cabecera minimalista */}
-        <Header title="Mis Alumnos" scrollY={scrollY} />
+        <Header title={t('alumnos.titulo')} scrollY={scrollY} />
 
         <ScrollView
           style={styles.scroll}

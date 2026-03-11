@@ -3,7 +3,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo } from 'react';
 import Constants from 'expo-constants';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 import Header from '../components/Header';
@@ -11,31 +10,38 @@ import { useAjustesContext } from '../context/AjustesContext';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
 import { Fonts } from '../theme/fonts';
-import { Tema, Moneda } from '../hooks/useAjustes';
-
-const mostrarProximamente = (funcion: string) => {
-  Alert.alert(
-    'Próximamente',
-    `${funcion} estará disponible en una próxima versión.`,
-    [{ text: 'OK' }]
-  );
-};
+import { Tema, Moneda, Idioma } from '../hooks/useAjustes';
+import { useTranslation } from 'react-i18next';
 
 export default function AjustesScreen() {
-  const { ajustes, actualizarTema, actualizarMoneda } = useAjustesContext();
+  const { ajustes, actualizarTema, actualizarMoneda, actualizarIdioma } = useAjustesContext();
   const c = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
 
+  const mostrarProximamente = (funcion: string) => {
+    Alert.alert(
+      t('ajustes.proximamente'),
+      t('ajustes.proximamenteMsg', { funcion }),
+      [{ text: 'OK' }]
+    );
+  };
+
   const temas: { label: string; value: Tema }[] = [
-    { label: 'Claro', value: 'claro' },
-    { label: 'Oscuro', value: 'oscuro' },
-    { label: 'Sistema', value: 'sistema' },
+    { label: t('ajustes.temaClaro'), value: 'claro' },
+    { label: t('ajustes.temaOscuro'), value: 'oscuro' },
+    { label: t('ajustes.temaSistema'), value: 'sistema' },
   ];
 
   const monedas: { label: string; value: Moneda }[] = [
     { label: '€', value: '€' },
     { label: '$', value: '$' },
     { label: '£', value: '£' },
+  ];
+
+  const idiomas: { label: string; value: Idioma }[] = [
+    { label: 'Español', value: 'es' },
+    { label: 'English', value: 'en' },
   ];
 
   // const duraciones: { label: string; value: Duracion }[] = [
@@ -48,7 +54,7 @@ export default function AjustesScreen() {
   return (
     <SafeAreaView style={styles.container}>
 
-      <Header title="Ajustes" />
+      <Header title={t('ajustes.titulo')} />
 
       <ScrollView
         style={styles.scroll}
@@ -57,18 +63,18 @@ export default function AjustesScreen() {
       >
 
         {/* APARIENCIA */}
-        <Text style={styles.seccionTitulo}>APARIENCIA</Text>
+        <Text style={styles.seccionTitulo}>{t('ajustes.apariencia')}</Text>
         <View style={styles.bloque}>
-          <Text style={styles.opcionLabel}>Tema</Text>
+          <Text style={styles.opcionLabel}>{t('ajustes.tema')}</Text>
           <View style={styles.chips}>
-            {temas.map(t => (
+            {temas.map(tema => (
               <TouchableOpacity
-                key={t.value}
-                style={[styles.chip, ajustes.tema === t.value && styles.chipActivo]}
-                onPress={() => actualizarTema(t.value)}
+                key={tema.value}
+                style={[styles.chip, ajustes.tema === tema.value && styles.chipActivo]}
+                onPress={() => actualizarTema(tema.value)}
               >
-                <Text style={[styles.chipTexto, ajustes.tema === t.value && styles.chipTextoActivo]}>
-                  {t.label}
+                <Text style={[styles.chipTexto, ajustes.tema === tema.value && styles.chipTextoActivo]}>
+                  {tema.label}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -76,10 +82,10 @@ export default function AjustesScreen() {
         </View>
 
         {/* PREFERENCIAS */}
-        <Text style={styles.seccionTitulo}>PREFERENCIAS</Text>
+        <Text style={styles.seccionTitulo}>{t('ajustes.preferencias')}</Text>
         <View style={styles.bloque}>
           <View style={styles.opcionFila}>
-            <Text style={styles.opcionLabel}>Moneda</Text>
+            <Text style={styles.opcionLabel}>{t('ajustes.moneda')}</Text>
             <View style={styles.chips}>
               {monedas.map(m => (
                 <TouchableOpacity
@@ -115,36 +121,44 @@ export default function AjustesScreen() {
         </View>
 
         {/* IDIOMA */}
-        <Text style={styles.seccionTitulo}>IDIOMA</Text>
+        <Text style={styles.seccionTitulo}>{t('ajustes.idioma')}</Text>
         <View style={styles.bloque}>
-          <TouchableOpacity
-            style={styles.botonProximamente}
-            onPress={() => mostrarProximamente('Selección de idioma')}
-          >
-            <Ionicons name="language-outline" size={20} color={c.textoP} />
-            <Text style={styles.botonProximamenteTexto}>Seleccionar idioma</Text>
-            <Text style={styles.proximamenteTag}>Próximamente</Text>
-          </TouchableOpacity>
+          <View style={styles.opcionFila}>
+            <Text style={styles.opcionLabel}>{t('ajustes.seleccionarIdioma')}</Text>
+            <View style={styles.chips}>
+              {idiomas.map(i => (
+                <TouchableOpacity
+                  key={i.value}
+                  style={[styles.chip, ajustes.idioma === i.value && styles.chipActivo]}
+                  onPress={() => actualizarIdioma(i.value)}
+                >
+                  <Text style={[styles.chipTexto, ajustes.idioma === i.value && styles.chipTextoActivo]}>
+                    {i.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
         </View>
 
         {/* DATOS */}
-        <Text style={styles.seccionTitulo}>DATOS</Text>
+        <Text style={styles.seccionTitulo}>{t('ajustes.datos')}</Text>
         <View style={styles.bloque}>
           <TouchableOpacity
             style={styles.botonProximamente}
-            onPress={() => mostrarProximamente('Exportar CSV')}
+            onPress={() => mostrarProximamente(t('ajustes.exportarCSV'))}
           >
             <AntDesign name="export" size={20} color={c.textoP} />
-            <Text style={styles.botonProximamenteTexto}>Exportar CSV</Text>
-            <Text style={styles.proximamenteTag}>Próximamente</Text>
+            <Text style={styles.botonProximamenteTexto}>{t('ajustes.exportarCSV')}</Text>
+            <Text style={styles.proximamenteTag}>{t('ajustes.proximamente')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* ACERCA DE */}
-        <Text style={styles.seccionTitulo}>ACERCA DE</Text>
+        <Text style={styles.seccionTitulo}>{t('ajustes.acercaDe')}</Text>
         <View style={styles.bloque}>
           <View style={styles.opcionFila}>
-            <Text style={styles.opcionLabel}>Versión</Text>
+            <Text style={styles.opcionLabel}>{t('ajustes.version')}</Text>
             <Text style={styles.versionTexto}>
               {Constants.expoConfig?.version ?? '1.0.0'}
             </Text>
@@ -215,12 +229,14 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     flexWrap: 'wrap',
   },
   chip: {
+    minWidth: 68,
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: c.borde,
     backgroundColor: c.tarjeta,
+    alignItems: 'center',
   },
   chipActivo: {
     backgroundColor: c.accion,
@@ -230,6 +246,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     fontSize: 13,
     fontFamily: Fonts.regular,
     color: c.textoS,
+    textAlign: 'center',
   },
   chipTextoActivo: {
     fontFamily: Fonts.medium,

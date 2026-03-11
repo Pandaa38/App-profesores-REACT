@@ -12,6 +12,7 @@ import { Colores } from '../theme/colores';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useTranslation } from 'react-i18next';
 
 type FilterModalProps = {
   visible: boolean;
@@ -26,6 +27,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
 
   const c = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const alumnoSeleccionado = alumnos.find(a => a.id === filtrosLocales.alumnoId);
@@ -41,16 +43,16 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
   };
 
   const periodos: { label: string; value: Periodo }[] = [
-    { label: 'Todos', value: 'todos' },
-    { label: 'Este mes', value: 'esteMes' },
-    { label: 'Mes anterior', value: 'mesAnterior' },
-    { label: 'Este año', value: 'esteAno' },
+    { label: t('filtros.todos'), value: 'todos' },
+    { label: t('filtros.esteMes'), value: 'esteMes' },
+    { label: t('filtros.mesAnterior'), value: 'mesAnterior' },
+    { label: t('filtros.esteAno'), value: 'esteAno' },
   ];
 
   const ordenes: { label: string; value: Orden }[] = [
-    { label: 'Más recientes', value: 'recientes' },
-    { label: 'Más antiguos', value: 'antiguos' },
-    { label: 'Mayor importe', value: 'mayorImporte' },
+    { label: t('filtros.recientes'), value: 'recientes' },
+    { label: t('filtros.antiguos'), value: 'antiguos' },
+    { label: t('filtros.mayorImporte'), value: 'mayorImporte' },
   ];
 
   return (
@@ -63,7 +65,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
 
         {/* Cabecera */}
         <View style={styles.cabecera}>
-          <Text style={styles.titulo}>Filtros</Text>
+          <Text style={styles.titulo}>{t('filtros.titulo')}</Text>
           <TouchableOpacity onPress={onCerrar}>
             <AntDesign name="close" size={20} color={c.textoP} />
           </TouchableOpacity>
@@ -72,7 +74,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         {/* PERÍODO */}
         <View style={styles.seccionHeader}>
           <Ionicons name="calendar-clear-outline" size={18} color={c.textoS} />
-          <Text style={styles.seccionTitulo}>Período</Text>
+          <Text style={styles.seccionTitulo}>{t('filtros.periodo')}</Text>
         </View>
         <View style={styles.chips}>
           {periodos.map(p => (
@@ -91,14 +93,14 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         {/* ALUMNO */}
         <View style={styles.seccionHeader}>
           <AntDesign name="user-switch" size={18} color={c.textoS} />
-          <Text style={styles.seccionTitulo}>Alumno</Text>
+          <Text style={styles.seccionTitulo}>{t('filtros.alumno')}</Text>
         </View>
         <TouchableOpacity
           style={styles.dropdown}
           onPress={() => setDropdownAbierto(!dropdownAbierto)}
         >
           <Text style={styles.dropdownTexto}>
-            {alumnoSeleccionado ? alumnoSeleccionado.nombre : 'Todos los alumnos'}
+            {alumnoSeleccionado ? alumnoSeleccionado.nombre : t('filtros.todosLosAlumnos')}
           </Text>
           <AntDesign
             name={dropdownAbierto ? 'up' : 'down'}
@@ -117,7 +119,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
               }}
             >
               <Text style={[styles.dropdownItemTexto, filtrosLocales.alumnoId === null && styles.dropdownItemTextoActivo]}>
-                Todos los alumnos
+                {t('filtros.todosLosAlumnos')}
               </Text>
             </TouchableOpacity>
             {alumnos.map(alumno => (
@@ -140,7 +142,7 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         {/* ORDENAR POR */}
         <View style={styles.seccionHeader}>
           <FontAwesome name="sort" size={18} color={c.textoS} />
-          <Text style={styles.seccionTitulo}>Ordenar por</Text>
+          <Text style={styles.seccionTitulo}>{t('filtros.ordenarPor')}</Text>
         </View>
         {ordenes.map(o => (
           <TouchableOpacity
@@ -158,10 +160,10 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
         {/* BOTONES */}
         <View style={styles.botones}>
           <TouchableOpacity style={styles.botonRestablecer} onPress={handleRestablecer}>
-            <Text style={styles.textoRestablecer}>Restablecer</Text>
+            <Text style={styles.textoRestablecer}>{t('filtros.restablecer')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.botonAplicar} onPress={handleAplicar}>
-            <Text style={styles.textoAplicar}>Aplicar</Text>
+            <Text style={styles.textoAplicar}>{t('filtros.aplicar')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -211,12 +213,14 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     gap: 8,
   },
   chip: {
+    minWidth: 64,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: c.borde,
     backgroundColor: c.tarjeta,
+    alignItems: 'center',
   },
   chipActivo: {
     backgroundColor: c.accion,
@@ -225,6 +229,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
   chipTexto: {
     fontSize: 13,
     color: c.textoS,
+    textAlign: 'center',
   },
   chipTextoActivo: {
     color: c.accionTexto,

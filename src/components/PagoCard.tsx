@@ -8,22 +8,23 @@ import { useAjustesContext } from '../context/AjustesContext';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
 import { Fonts } from '../theme/fonts';
+import { useTranslation } from 'react-i18next';
 
 type PagoCardProps = {
   pago: PagoRegistro;
 };
 
-const formatearFecha = (fecha: string) => {
+const formatearFecha = (fecha: string, t: (key: string) => string) => {
   const hoy = new Date();
   const fechaPago = new Date(fecha);
  
   const esHoy = hoy.toDateString() === fechaPago.toDateString();
-  if (esHoy) return 'Hoy';
+  if (esHoy) return t('historial.hoy');
 
   const ayer = new Date();
   ayer.setDate(hoy.getDate() - 1);
   const esAyer = ayer.toDateString() === fechaPago.toDateString();
-  if (esAyer) return 'Ayer';
+  if (esAyer) return t('historial.ayer');
 
   const [date] = fecha.split(' ');
   const [year, month, day] = date.split('-');
@@ -33,7 +34,7 @@ const formatearFecha = (fecha: string) => {
 export default function PagoCard({ pago }: PagoCardProps) {
 
   const { ajustes } = useAjustesContext();
-  
+  const { t } = useTranslation();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
@@ -42,12 +43,12 @@ export default function PagoCard({ pago }: PagoCardProps) {
 
       <View style={styles.izquierda}>
         <Text style={styles.nombre}>{pago.alumnoNombre}</Text>
-        <Text style={styles.horas}>{pago.horasCobradas}h cobradas</Text>
+        <Text style={styles.horas}>{t('historial.horasCobradas', { count: pago.horasCobradas })}</Text>
       </View>
 
       <View style={styles.derecha}>
         <Text style={styles.monto}>{pago.montoCobrado.toFixed(2)}{ajustes.moneda}</Text>
-        <Text style={styles.fecha}>{formatearFecha(pago.fecha)}</Text>
+        <Text style={styles.fecha}>{formatearFecha(pago.fecha, t)}</Text>
       </View>
 
       {/* <TouchableOpacity onPress={confirmarEliminacion} style={styles.botonEliminar}>

@@ -1,0 +1,79 @@
+{
+  "alumnos": {
+    "titulo": "My Students",
+    "pendientes_one": "Pending",
+    "pendientes_other": "Pending",
+    "deuda": "Debt",
+    "cobrar": "Charge",
+    "confirmarEliminarTitulo": "Confirm deletion",
+    "confirmarEliminarMsg": "Delete {{nombre}}?",
+    "cancelar": "Cancel",
+    "eliminar": "Delete"
+  },
+  "emptyState": {
+    "titulo": "No students yet",
+    "subtituloAntes": "Tap the ",
+    "subtituloDespues": " button to add your first student."
+  },
+  "form": {
+    "nuevoAlumno": "New student",
+    "editarAlumno": "Edit student",
+    "nombrePlaceholder": "Name",
+    "nombreEditarPlaceholder": "Name: {{nombre}} (optional)",
+    "precioPlaceholder": "Price per hour",
+    "precioEditarPlaceholder": "Price: {{precio}}{{moneda}} (optional)",
+    "horasEditarPlaceholder": "Pending hours: {{horas}} (optional)",
+    "cancelar": "Cancel",
+    "guardar": "Save"
+  },
+  "historial": {
+    "titulo": "History",
+    "totalHoras_one": "{{count}}h total",
+    "totalHoras_other": "{{count}}h total",
+    "filtrar": "Filter",
+    "sinHistorial": "No history",
+    "horasCobradas_one": "{{count}}h charged",
+    "horasCobradas_other": "{{count}}h charged",
+    "hoy": "Today",
+    "ayer": "Yesterday",
+    "borrarHistorialTitulo": "Delete history",
+    "borrarFiltrados": "Delete filtered records? The rest of the history will be kept.",
+    "borrarTodo": "Are you sure? This will delete all history.",
+    "cancelar": "Cancel",
+    "borrar": "Delete"
+  },
+  "filtros": {
+    "titulo": "Filters",
+    "periodo": "Period",
+    "todos": "All",
+    "esteMes": "This month",
+    "mesAnterior": "Last month",
+    "esteAno": "This year",
+    "alumno": "Student",
+    "todosLosAlumnos": "All students",
+    "ordenarPor": "Sort by",
+    "recientes": "Most recent",
+    "antiguos": "Oldest",
+    "mayorImporte": "Highest amount",
+    "restablecer": "Reset",
+    "aplicar": "Apply"
+  },
+  "ajustes": {
+    "titulo": "Settings",
+    "apariencia": "APPEARANCE",
+    "tema": "Theme",
+    "temaClaro": "Light",
+    "temaOscuro": "Dark",
+    "temaSistema": "System",
+    "preferencias": "PREFERENCES",
+    "moneda": "Currency",
+    "idioma": "LANGUAGE",
+    "seleccionarIdioma": "Language",
+    "datos": "DATA",
+    "exportarCSV": "Export CSV",
+    "proximamente": "Coming soon",
+    "proximamenteMsg": "{{funcion}} will be available in an upcoming version.",
+    "acercaDe": "ABOUT",
+    "version": "Version"
+  }
+}

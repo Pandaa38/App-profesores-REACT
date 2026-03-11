@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode } from 'react';
-import { useAjustes, Ajustes, Tema, Moneda, Duracion } from '../hooks/useAjustes';
+import { useAjustes, Ajustes, Tema, Moneda, Duracion, Idioma } from '../hooks/useAjustes';
 
 type AjustesContextType = {
   ajustes: Ajustes;
@@ -7,6 +7,7 @@ type AjustesContextType = {
   actualizarTema: (tema: Tema) => Promise<void>;
   actualizarMoneda: (moneda: Moneda) => Promise<void>;
   actualizarDuracion: (duracion: Duracion) => Promise<void>;
+  actualizarIdioma: (idioma: Idioma) => Promise<void>;
 };
 
 const AjustesContext = createContext<AjustesContextType | null>(null);

@@ -1,0 +1,79 @@
+{
+  "alumnos": {
+    "titulo": "Mis Alumnos",
+    "pendientes_one": "Pendiente",
+    "pendientes_other": "Pendientes",
+    "deuda": "Deuda",
+    "cobrar": "Cobrar",
+    "confirmarEliminarTitulo": "Confirmar eliminación",
+    "confirmarEliminarMsg": "¿Eliminar a {{nombre}}?",
+    "cancelar": "Cancelar",
+    "eliminar": "Eliminar"
+  },
+  "emptyState": {
+    "titulo": "Sin alumnos aún",
+    "subtituloAntes": "Toca el botón ",
+    "subtituloDespues": " para añadir tu primer alumno."
+  },
+  "form": {
+    "nuevoAlumno": "Nuevo alumno",
+    "editarAlumno": "Editar alumno",
+    "nombrePlaceholder": "Nombre",
+    "nombreEditarPlaceholder": "Nombre: {{nombre}} (opcional)",
+    "precioPlaceholder": "Precio por hora",
+    "precioEditarPlaceholder": "Precio: {{precio}}{{moneda}} (opcional)",
+    "horasEditarPlaceholder": "Horas pendientes: {{horas}} (opcional)",
+    "cancelar": "Cancelar",
+    "guardar": "Guardar"
+  },
+  "historial": {
+    "titulo": "Historial",
+    "totalHoras_one": "{{count}}h total",
+    "totalHoras_other": "{{count}}h totales",
+    "filtrar": "Filtrar",
+    "sinHistorial": "Sin historial",
+    "horasCobradas_one": "{{count}}h cobrada",
+    "horasCobradas_other": "{{count}}h cobradas",
+    "hoy": "Hoy",
+    "ayer": "Ayer",
+    "borrarHistorialTitulo": "Borrar historial",
+    "borrarFiltrados": "¿Eliminar los registros filtrados? El resto del historial se mantendrá.",
+    "borrarTodo": "¿Estás seguro? Esta acción eliminará todo el historial.",
+    "cancelar": "Cancelar",
+    "borrar": "Borrar"
+  },
+  "filtros": {
+    "titulo": "Filtros",
+    "periodo": "Período",
+    "todos": "Todos",
+    "esteMes": "Este mes",
+    "mesAnterior": "Mes anterior",
+    "esteAno": "Este año",
+    "alumno": "Alumno",
+    "todosLosAlumnos": "Todos los alumnos",
+    "ordenarPor": "Ordenar por",
+    "recientes": "Más recientes",
+    "antiguos": "Más antiguos",
+    "mayorImporte": "Mayor importe",
+    "restablecer": "Restablecer",
+    "aplicar": "Aplicar"
+  },
+  "ajustes": {
+    "titulo": "Ajustes",
+    "apariencia": "APARIENCIA",
+    "tema": "Tema",
+    "temaClaro": "Claro",
+    "temaOscuro": "Oscuro",
+    "temaSistema": "Sistema",
+    "preferencias": "PREFERENCIAS",
+    "moneda": "Moneda",
+    "idioma": "IDIOMA",
+    "seleccionarIdioma": "Idioma",
+    "datos": "DATOS",
+    "exportarCSV": "Exportar CSV",
+    "proximamente": "Próximamente",
+    "proximamenteMsg": "{{funcion}} estará disponible en una próxima versión.",
+    "acercaDe": "ACERCA DE",
+    "version": "Versión"
+  }
+}

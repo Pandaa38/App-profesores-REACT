@@ -12,6 +12,8 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 
+import './src/i18n/i18n';
+
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {

@@ -3,6 +3,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { Alumno } from '../type/types';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
+import { useAjustesContext } from '../context/AjustesContext';
+import { useTranslation } from 'react-i18next';
 
 type FormAlumnoProps = {
   visible: boolean;
@@ -17,6 +19,8 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
   const [horas, setHoras] = useState('');
 
   const c = useTheme();
+  const { t } = useTranslation();
+  const { ajustes } = useAjustesContext();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   useEffect(() => {
@@ -44,12 +48,12 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
         <View style={styles.formulario}>
 
           <Text style={styles.titulo}>
-            {alumnoEditar ? 'Editar alumno' : 'Nuevo alumno'}
+            {alumnoEditar ? t('form.editarAlumno') : t('form.nuevoAlumno')}
           </Text>
 
           <TextInput
             style={styles.input}
-            placeholder={alumnoEditar ? `Nombre: ${alumnoEditar.nombre} (opcional)` : 'Nombre'}
+            placeholder={alumnoEditar ? t('form.nombreEditarPlaceholder', { nombre: alumnoEditar.nombre }) : t('form.nombrePlaceholder')}
             placeholderTextColor={c.textoT}
             value={nombre}
             onChangeText={setNombre}
@@ -57,7 +61,7 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
 
           <TextInput
             style={styles.input}
-            placeholder={alumnoEditar ? `Precio: ${alumnoEditar.precioPorHora}€ (opcional)` : 'Precio por hora (€)'}
+            placeholder={alumnoEditar ? t('form.precioEditarPlaceholder', { precio: alumnoEditar.precioPorHora, moneda: ajustes.moneda }) : t('form.precioPlaceholder')}
             placeholderTextColor={c.textoT}
             value={precio}
             onChangeText={setPrecio}
@@ -67,7 +71,7 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
           {alumnoEditar && (
             <TextInput
               style={styles.input}
-              placeholder={`Horas pendientes: ${alumnoEditar.horasPendientes} (opcional)`}
+              placeholder={t('form.horasEditarPlaceholder', { horas: alumnoEditar.horasPendientes })}
               placeholderTextColor={c.textoT}
               value={horas}
               onChangeText={setHoras}
@@ -77,10 +81,10 @@ export default function FormularioAlumno({ visible, alumnoEditar, onGuardar, onC
 
           <View style={styles.botones}>
             <TouchableOpacity style={styles.botonCancelar} onPress={onCancelar}>
-              <Text style={styles.textoCancelar}>Cancelar</Text>
+              <Text style={styles.textoCancelar}>{t('form.cancelar')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.botonGuardar} onPress={handleGuardar}>
-              <Text style={styles.textoGuardar}>Guardar</Text>
+              <Text style={styles.textoGuardar}>{t('form.guardar')}</Text>
             </TouchableOpacity>
           </View>
 

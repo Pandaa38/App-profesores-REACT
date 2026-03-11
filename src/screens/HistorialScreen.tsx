@@ -14,6 +14,7 @@ import { useTheme } from '../theme/useTheme';
 import { useAjustesContext } from '../context/AjustesContext';
 import { Colores } from '../theme/colores';
 import { Fonts } from '../theme/fonts';
+import { useTranslation } from 'react-i18next';
 
 export default function HistorialScreen() {
   const { pagos, resumen, filtros, cargarHistorial, aplicarFiltros, handleVaciarHistorial } = useHistorial();
@@ -21,6 +22,7 @@ export default function HistorialScreen() {
   const { ajustes } = useAjustesContext();
   const [filtroVisible, setFiltroVisible] = useState(false);
   const c = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   useFocusEffect(
@@ -31,12 +33,12 @@ export default function HistorialScreen() {
 
   const handleBorrarHistorial = () => {
     const mensaje = filtrosActivos
-      ? '¿Eliminar los registros filtrados? El resto del historial se mantendrá.'
-      : '¿Estás seguro? Esta acción eliminará todo el historial.';
+      ? t('historial.borrarFiltrados')
+      : t('historial.borrarTodo');
 
-    Alert.alert('Borrar historial', mensaje, [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Borrar', style: 'destructive', onPress: handleVaciarHistorial },
+    Alert.alert(t('historial.borrarHistorialTitulo'), mensaje, [
+      { text: t('historial.cancelar'), style: 'cancel' },
+      { text: t('historial.borrar'), style: 'destructive', onPress: handleVaciarHistorial },
     ]);
   };
 
@@ -48,13 +50,13 @@ export default function HistorialScreen() {
   return (
     <SafeAreaView style={styles.container}>
 
-      <Header title="Historial" />
+      <Header title={t('historial.titulo')} />
 
       {/* Resumen total + botones */}
       <View style={styles.resumenContainer}>
         <View style={styles.resumenTextos}>
           <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}{ajustes.moneda}</Text>
-          <Text style={styles.resumenHoras}>{resumen.totalHoras}h totales</Text>
+          <Text style={styles.resumenHoras}>{t('historial.totalHoras', { count: resumen.totalHoras })}</Text>
         </View>
         <View style={styles.resumenBotones}>
           <TouchableOpacity onPress={handleBorrarHistorial}>
@@ -66,7 +68,7 @@ export default function HistorialScreen() {
           >
             <AntDesign name="filter" size={16} color={filtrosActivos ? c.accionTexto : c.textoP} />
             <Text style={[styles.textoFiltrar, filtrosActivos && styles.textoFiltrarActivo]}>
-              Filtrar
+              {t('historial.filtrar')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -81,7 +83,7 @@ export default function HistorialScreen() {
         showsVerticalScrollIndicator={false}
       >
         {pagos.length === 0 ? (
-          <Text style={styles.sinHistorial}>Sin historial</Text>
+          <Text style={styles.sinHistorial}>{t('historial.sinHistorial')}</Text>
         ) : (
           pagos.map(pago => (
             <PagoCard key={pago.id} pago={pago} />

@@ -3,17 +3,19 @@ import { AntDesign } from '@expo/vector-icons';
 import { useMemo } from 'react';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
+import { useTranslation } from 'react-i18next';
 
 export default function EmptyState() {
   const c = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   return (
     <View style={styles.container}>
       <AntDesign name="user-add" size={72} color={c.textoT} />
-      <Text style={styles.titulo}>Sin alumnos aún</Text>
+      <Text style={styles.titulo}>{t('emptyState.titulo')}</Text>
       <Text style={styles.subtitulo}>
-        Toca el botón <Text style={styles.destacado}>+</Text> para añadir tu primer alumno.
+        {t('emptyState.subtituloAntes')}<Text style={styles.destacado}>+</Text>{t('emptyState.subtituloDespues')}
       </Text>
     </View>
   );

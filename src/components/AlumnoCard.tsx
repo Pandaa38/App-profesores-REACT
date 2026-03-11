@@ -6,6 +6,7 @@ import { useAjustesContext } from '../context/AjustesContext';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
 import { Fonts } from '../theme/fonts';
+import { useTranslation } from 'react-i18next';
 
 import { 
   notificationAsync, 
@@ -15,7 +16,7 @@ import {
 } from 'expo-haptics';;
 
 type AlumnoCardProps = {
-  alumno: Alumno;
+  alumno: Alumno; 
   onCobrar: (alumno: Alumno) => void;
   onAddHoras: (alumno: Alumno, horas: number) => void;
   onEliminar: (alumno: Alumno) => void;
@@ -25,17 +26,18 @@ type AlumnoCardProps = {
 export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, onEditar }: AlumnoCardProps) {
   const deudaTotal = alumno.horasPendientes * alumno.precioPorHora;
   const { ajustes } = useAjustesContext();
+  const { t } = useTranslation();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const confirmarEliminacion = () => {
     notificationAsync(NotificationFeedbackType.Warning);
     Alert.alert(
-      'Confirmar eliminación',
-      `¿Eliminar a ${alumno.nombre}?`,
+      t('alumnos.confirmarEliminarTitulo'),
+      t('alumnos.confirmarEliminarMsg', { nombre: alumno.nombre }),
       [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Eliminar', style: 'destructive', onPress: () => onEliminar(alumno) }
+        { text: t('alumnos.cancelar'), style: 'cancel' },
+        { text: t('alumnos.eliminar'), style: 'destructive', onPress: () => onEliminar(alumno) }
       ]
     );
   };
@@ -60,14 +62,14 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, o
           <Text style={styles.numeroGrande}>
             {alumno.horasPendientes}<Text style={styles.unidades}>h</Text>
           </Text>
-          <Text style={styles.etiquetaDato}>Pendientes</Text>
+          <Text style={styles.etiquetaDato}>{t('alumnos.pendientes', { count: alumno.horasPendientes })}</Text>
         </View>
         <View style={styles.divisor} />
         <View style={styles.cajaDato}>
           <Text style={[styles.numeroGrande, deudaTotal > 0 && styles.textoDeuda]}>
             {deudaTotal}<Text style={styles.unidades}>{ajustes.moneda}</Text>
           </Text>
-          <Text style={styles.etiquetaDato}>Deuda</Text>
+          <Text style={styles.etiquetaDato}>{t('alumnos.deuda')}</Text>
         </View>
       </View>
 
@@ -105,7 +107,7 @@ export default function AlumnoCard({ alumno, onCobrar, onAddHoras, onEliminar, o
           }}
           disabled={deudaTotal === 0}
         >
-          <Text style={styles.textoBotonPrincipal}>Cobrar</Text>
+          <Text style={styles.textoBotonPrincipal}>{t('alumnos.cobrar')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -215,10 +217,12 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     fontSize: 14,
   },
   botonPrincipal: {
+    minWidth: 90,
     backgroundColor: c.accion,
     paddingVertical: 8,
     paddingHorizontal: 24,
     borderRadius: 10,
+    alignItems: 'center',
   },
   textoBotonPrincipal: {
     color: c.accionTexto,
