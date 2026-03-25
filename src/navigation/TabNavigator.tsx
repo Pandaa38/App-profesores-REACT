@@ -1,7 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+
+import * as NavigationBar from 'expo-navigation-bar';
+import { useEffect } from 'react';
 
 import AlumnosScreen from '../screens/AlumnosScreen';
 import HistorialScreen from '../screens/HistorialScreen';
@@ -16,6 +19,13 @@ export default function TabNavigator() {
   const { ajustes } = useAjustesContext();
   const sistemaOscuro = useColorScheme() === 'dark';
   const esOscuro = ajustes.tema === 'oscuro' || (ajustes.tema === 'sistema' && sistemaOscuro);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setBackgroundColorAsync(c.fondo);
+      NavigationBar.setButtonStyleAsync(esOscuro ? 'light' : 'dark');
+    }
+  }, [c.fondo, esOscuro]);
 
   return (
     <>

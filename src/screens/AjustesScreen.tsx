@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Image, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo } from 'react';
 import Constants from 'expo-constants';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -16,8 +15,12 @@ import { useTranslation } from 'react-i18next';
 export default function AjustesScreen() {
   const { ajustes, actualizarTema, actualizarMoneda, actualizarIdioma } = useAjustesContext();
   const c = useTheme();
+  const colorScheme = useColorScheme();
+  const esOscuro = ajustes.tema === 'oscuro' || (ajustes.tema === 'sistema' && colorScheme === 'dark');
   const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
+
+  const appName = Constants.expoConfig?.name ?? 'TutorApp';
 
   const mostrarProximamente = (funcion: string) => {
     Alert.alert(
@@ -153,7 +156,7 @@ export default function AjustesScreen() {
             <Text style={styles.proximamenteTag}>{t('ajustes.proximamente')}</Text>
           </TouchableOpacity>
         </View>
-
+        
         {/* ACERCA DE */}
         <Text style={styles.seccionTitulo}>{t('ajustes.acercaDe')}</Text>
         <View style={styles.bloque}>
@@ -165,13 +168,31 @@ export default function AjustesScreen() {
           </View>
         </View>
 
-      </ScrollView>
+        {/* LOGO */}
+        <View style={styles.logoFooter}>
+          <View
+            style={[
+              styles.logoMedallon,
+              esOscuro ? styles.logoMedallonOscuro : styles.logoMedallonClaro,
+            ]}
+          >
+            <Image
+              style={styles.logoImagen}
+              source={require('../../assets/adaptive-icon.png')}
+            />
+          </View>
+          <Text style={styles.logoTexto}>{appName}</Text>
+        </View>
 
+      </ScrollView>
+      
+      {/*
       <LinearGradient
         colors={[`${c.fondo}00`, c.fondo]}
         style={styles.gradientBottom}
         pointerEvents="none"
       />
+      */}
 
     </SafeAreaView>
   );
@@ -277,11 +298,43 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     fontFamily: Fonts.regular,
     color: c.textoT,
   },
-  gradientBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 100,
+  logoFooter: {
+    alignItems: 'center',
+    marginTop: 14,
+    marginBottom: 50,
+    gap: 8,
+  },
+  logoMedallon: {
+    width: 92,
+    height: 92,
+    borderRadius: 46,
+    backgroundColor: c.tarjeta,
+    borderWidth: 1,
+    borderColor: c.borde,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+  },
+  logoMedallonClaro: {
+    shadowOpacity: 0.12,
+    elevation: 5,
+  },
+  logoMedallonOscuro: {
+    shadowOpacity: 0.28,
+    elevation: 2,
+    borderColor: c.textoT,
+  },
+  logoImagen: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+  },
+  logoTexto: {
+    fontSize: 12,
+    color: c.textoT,
+    fontFamily: Fonts.medium,
+    letterSpacing: 0.4,
   },
 });
