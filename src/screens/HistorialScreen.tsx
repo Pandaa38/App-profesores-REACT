@@ -8,6 +8,7 @@ import { AntDesign } from '@expo/vector-icons';
 import PagoCard from '../components/PagoCard';
 import Header from '../components/Header';
 import FilterModal from '../components/FilterModal';
+import ScreenLayout from '../components/ScreenLayout';
 import { useHistorial } from '../hooks/useHistorial';
 import { useAlumnos } from '../hooks/useAlumnos';
 import { useTheme } from '../theme/useTheme';
@@ -48,39 +49,44 @@ export default function HistorialScreen() {
     filtros.orden !== 'recientes';
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      <Header title={t('historial.titulo')} />
-
-      {/* Resumen total + botones */}
-      <View style={styles.resumenContainer}>
-        <View style={styles.resumenTextos}>
-          <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}{ajustes.moneda}</Text>
-          <Text style={styles.resumenHoras}>{t('historial.totalHoras', { count: resumen.totalHoras })}</Text>
-        </View>
-        <View style={styles.resumenBotones}>
-          <TouchableOpacity onPress={handleBorrarHistorial}>
-            <AntDesign name="delete" size={22} color={c.textoT} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.botonFiltrar, filtrosActivos && styles.botonFiltrarActivo]}
-            onPress={() => setFiltroVisible(true)}
-          >
-            <AntDesign name="filter" size={16} color={filtrosActivos ? c.accionTexto : c.textoP} />
-            <Text style={[styles.textoFiltrar, filtrosActivos && styles.textoFiltrarActivo]}>
-              {t('historial.filtrar')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.separador} />
-
-      {/* Lista de pagos */}
-      <ScrollView
-        style={styles.scroll}
+    <>
+      <ScreenLayout
+        title={t('historial.titulo')}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+        headerContent={
+          <>
+            <View style={styles.resumenContainer}>
+              <View style={styles.resumenTextos}>
+                <Text style={styles.resumenMonto}>{resumen.totalCobrado.toFixed(2)}{ajustes.moneda}</Text>
+                <Text style={styles.resumenHoras}>{t('historial.totalHoras', { count: resumen.totalHoras })}</Text>
+              </View>
+              <View style={styles.resumenBotones}>
+                <TouchableOpacity onPress={handleBorrarHistorial}>
+                  <AntDesign name="delete" size={22} color={c.textoT} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.botonFiltrar, filtrosActivos && styles.botonFiltrarActivo]}
+                  onPress={() => setFiltroVisible(true)}
+                >
+                  <AntDesign name="filter" size={16} color={filtrosActivos ? c.accionTexto : c.textoP} />
+                  <Text style={[styles.textoFiltrar, filtrosActivos && styles.textoFiltrarActivo]}>
+                    {t('historial.filtrar')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.separador} />
+          </>
+        }
+        floatingContent={
+          <FilterModal
+            visible={filtroVisible}
+            filtros={filtros}
+            alumnos={alumnos}
+            onAplicar={aplicarFiltros}
+            onCerrar={() => setFiltroVisible(false)}
+          />
+        }
       >
         {pagos.length === 0 ? (
           <Text style={styles.sinHistorial}>{t('historial.sinHistorial')}</Text>
@@ -89,23 +95,8 @@ export default function HistorialScreen() {
             <PagoCard key={pago.id} pago={pago} />
           ))
         )}
-      </ScrollView>
-
-      <LinearGradient
-        colors={[`${c.fondo}00`, c.fondo]}
-        style={styles.gradientBottom}
-        pointerEvents="none"
-      />
-
-      <FilterModal
-        visible={filtroVisible}
-        filtros={filtros}
-        alumnos={alumnos}
-        onAplicar={aplicarFiltros}
-        onCerrar={() => setFiltroVisible(false)}
-      />
-
-    </SafeAreaView>
+      </ScreenLayout>
+    </>
   );
 }
 

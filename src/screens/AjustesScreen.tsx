@@ -1,24 +1,36 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Image, useColorScheme } from 'react-native';
+// HACEN LAS COSAS FUNCIONAR
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Image, useColorScheme, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useMemo } from 'react';
-import Constants from 'expo-constants';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { useMemo, useRef } from 'react';
 
-import Header from '../components/Header';
+// COLORCITOS
 import { useAjustesContext } from '../context/AjustesContext';
 import { useTheme } from '../theme/useTheme';
 import { Colores } from '../theme/colores';
 import { Fonts } from '../theme/fonts';
+import Constants from 'expo-constants';
+
+// MODO ME CREO INTERNACIONAL
 import { Tema, Moneda, Idioma } from '../hooks/useAjustes';
 import { useTranslation } from 'react-i18next';
 
+// COMPONENTES
+import Header from '../components/Header';
+import ScreenLayout from '../components/ScreenLayout';
+import SelectorChips from '../components/SelectorChips';
+
+// ICONOS
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 export default function AjustesScreen() {
+  const scrollY = useRef(new Animated.Value(0)).current;
   const { ajustes, actualizarTema, actualizarMoneda, actualizarIdioma } = useAjustesContext();
   const c = useTheme();
   const colorScheme = useColorScheme();
   const esOscuro = ajustes.tema === 'oscuro' || (ajustes.tema === 'sistema' && colorScheme === 'dark');
   const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
+
 
   const appName = Constants.expoConfig?.name ?? 'TutorApp';
 
@@ -55,20 +67,24 @@ export default function AjustesScreen() {
   // ];
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      <Header title={t('ajustes.titulo')} />
-
-      <ScrollView
-        style={styles.scroll}
+    <>
+      <ScreenLayout
+        title={t('ajustes.titulo')}
+        scrollY={scrollY}
+        showGradient={false}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
       >
 
         {/* APARIENCIA */}
         <Text style={styles.seccionTitulo}>{t('ajustes.apariencia')}</Text>
         <View style={styles.bloque}>
           <Text style={styles.opcionLabel}>{t('ajustes.tema')}</Text>
+          {/* CÓDIGO ANTIGUO:
           <View style={styles.chips}>
             {temas.map(tema => (
               <TouchableOpacity
@@ -82,6 +98,8 @@ export default function AjustesScreen() {
               </TouchableOpacity>
             ))}
           </View>
+          */}
+          <SelectorChips opciones={temas} valorActual={ajustes.tema} onSelect={actualizarTema} />
         </View>
 
         {/* PREFERENCIAS */}
@@ -89,6 +107,7 @@ export default function AjustesScreen() {
         <View style={styles.bloque}>
           <View style={styles.opcionFila}>
             <Text style={styles.opcionLabel}>{t('ajustes.moneda')}</Text>
+            {/* CÓDIGO ANTIGUO:
             <View style={styles.chips}>
               {monedas.map(m => (
                 <TouchableOpacity
@@ -102,6 +121,8 @@ export default function AjustesScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            */}
+            <SelectorChips opciones={monedas} valorActual={ajustes.moneda} onSelect={actualizarMoneda} />
           </View>
 
           {/* <View style={styles.divisor} />
@@ -128,6 +149,7 @@ export default function AjustesScreen() {
         <View style={styles.bloque}>
           <View style={styles.opcionFila}>
             <Text style={styles.opcionLabel}>{t('ajustes.seleccionarIdioma')}</Text>
+            {/* CÓDIGO ANTIGUO:
             <View style={styles.chips}>
               {idiomas.map(i => (
                 <TouchableOpacity
@@ -141,6 +163,8 @@ export default function AjustesScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            */}
+            <SelectorChips opciones={idiomas} valorActual={ajustes.idioma} onSelect={actualizarIdioma} />
           </View>
         </View>
 
@@ -183,18 +207,8 @@ export default function AjustesScreen() {
           </View>
           <Text style={styles.logoTexto}>{appName}</Text>
         </View>
-
-      </ScrollView>
-      
-      {/*
-      <LinearGradient
-        colors={[`${c.fondo}00`, c.fondo]}
-        style={styles.gradientBottom}
-        pointerEvents="none"
-      />
-      */}
-
-    </SafeAreaView>
+      </ScreenLayout>
+    </>
   );
 }
 
@@ -244,6 +258,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     color: c.textoP,
     fontFamily: Fonts.medium,
   },
+  /* CÓDIGO ANTIGUO (MOVIDO A SelectorChips):
   chips: {
     flexDirection: 'row',
     gap: 6,
@@ -273,6 +288,7 @@ const makeStyles = (c: Colores) => StyleSheet.create({
     fontFamily: Fonts.medium,
     color: c.accionTexto,
   },
+  */
   divisor: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: c.borde,

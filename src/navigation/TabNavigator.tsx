@@ -1,16 +1,25 @@
+
+// LO QUE HACE QUE TO FUNCIONE
 import { useColorScheme, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-
 import * as NavigationBar from 'expo-navigation-bar';
 import { useEffect } from 'react';
 
+// LAS PANTALLAS
 import AlumnosScreen from '../screens/AlumnosScreen';
 import HistorialScreen from '../screens/HistorialScreen';
 import AjustesScreen from '../screens/AjustesScreen';
+import CalendarioScreen from '../screens/CalendarioScreen';
+
+// COLORINES
 import { useTheme } from '../theme/useTheme';
 import { useAjustesContext } from '../context/AjustesContext';
+
+// LOS FCKING ICONOS
+import { AntDesign } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -48,6 +57,15 @@ export default function TabNavigator() {
         options={{
           tabBarIcon: ({ color, focused }) => (
             <AntDesign name="user" size={focused ? 26 : 23} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Calendario"
+        component={CalendarioScreen}
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name="calendar-clear-outline" size={focused ? 26 : 23} color={color} />
           ),
         }}
       />

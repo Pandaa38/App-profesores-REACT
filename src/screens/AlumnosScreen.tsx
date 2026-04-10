@@ -8,6 +8,7 @@ import AddButton from '../components/AddButton';
 import FormularioAlumno from '../components/FormAlumno';
 import Header from '../components/Header';
 import EmptyState from '../components/EmptyState';
+import ScreenLayout from '../components/ScreenLayout';
 
 import { useAlumnos } from '../hooks/useAlumnos';
 import { useTheme } from '../theme/useTheme';
@@ -42,60 +43,47 @@ export default function AlumnosScreen() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-
-        {/* Cabecera minimalista */}
-        <Header title={t('alumnos.titulo')} scrollY={scrollY} />
-
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[styles.scrollContent, alumnos.length === 0 && styles.scrollVacio]}
-          showsVerticalScrollIndicator={false}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
-          )}
-          scrollEventThrottle={16}
-        >
-          {alumnos.length === 0 ? (
-            <EmptyState />
-          ) : (
-            alumnos.map(alumno => (
-              <AlumnoCard
-                key={alumno.id}
-                alumno={alumno}
-                onAddHoras={handleAddHoras}
-                onCobrar={handleCobrar}
-                onEliminar={handleEliminar}
-                onEditar={onEditar}
-              />
-            ))
-          )}
-        </ScrollView>
-
-        {/* DEGRADADO INFERIOR */}
-        <LinearGradient
-          colors={[`${c.fondo}00`, c.fondo]}
-          style={styles.gradientBottom}
-          pointerEvents="none"
-        />
-
-        {/* BOTÓN FLOTANTE */}
-        <View style={styles.fabContainer}>
-          <AddButton onPress={() => setFormVisible(true)} />
-        </View>
-
-        <FormularioAlumno
-          visible={formVisible}
-          alumnoEditar={alumnoEditar}
-          onGuardar={onGuardar}
-          onCancelar={() => {
-            setAlumnoEditar(undefined);
-            setFormVisible(false);
-          }}
-        />
-
-      </SafeAreaView>
+      <ScreenLayout
+        title={t('alumnos.titulo')}
+        scrollY={scrollY}
+        contentContainerStyle={[styles.scrollContent, alumnos.length === 0 && styles.scrollVacio]}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+        floatingContent={
+          <>
+            <View style={styles.fabContainer}>
+              <AddButton onPress={() => setFormVisible(true)} />
+            </View>
+            <FormularioAlumno
+              visible={formVisible}
+              alumnoEditar={alumnoEditar}
+              onGuardar={onGuardar}
+              onCancelar={() => {
+                setAlumnoEditar(undefined);
+                setFormVisible(false);
+              }}
+            />
+          </>
+        }
+      >
+        {alumnos.length === 0 ? (
+          <EmptyState />
+        ) : (
+          alumnos.map(alumno => (
+            <AlumnoCard
+              key={alumno.id}
+              alumno={alumno}
+              onAddHoras={handleAddHoras}
+              onCobrar={handleCobrar}
+              onEliminar={handleEliminar}
+              onEditar={onEditar}
+            />
+          ))
+        )}
+      </ScreenLayout>
     </SafeAreaProvider>
   );
 }
