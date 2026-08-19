@@ -16,7 +16,6 @@ export const FILTROS_DEFAULT: FiltrosHistorial = {
   orden: 'recientes',
 };
 
-// Genera las condiciones WHERE y ORDER BY según los filtros
 function buildQuery(filtros: FiltrosHistorial): { where: string; params: any[]; orderBy: string } {
   const conditions: string[] = [];
   const params: any[] = [];

@@ -1,5 +1,12 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useAjustes, Ajustes, Tema, Moneda, Duracion, Idioma } from '../hooks/useAjustes';
+import { createContext, useContext, ReactNode } from "react";
+import {
+  useAjustes,
+  Ajustes,
+  Tema,
+  Moneda,
+  Duracion,
+  Idioma,
+} from "../hooks/useAjustes";
 
 type AjustesContextType = {
   ajustes: Ajustes;
@@ -21,9 +28,9 @@ export function AjustesProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Hook para consumir el contexto fácilmente
 export function useAjustesContext() {
   const context = useContext(AjustesContext);
-  if (!context) throw new Error('useAjustesContext debe usarse dentro de AjustesProvider');
+  if (!context)
+    throw new Error("useAjustesContext debe usarse dentro de AjustesProvider");
   return context;
 }

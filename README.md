@@ -8,25 +8,26 @@ Desarrollada con React Native, Expo y TypeScript.
 
 ## Funcionalidades
 
-| Función | Descripción |
-|---|---|
-| Añadir alumnos | Registra nuevos alumnos con nombre y precio por hora |
-| Editar alumnos | Modifica el nombre, precio/hora u horas pendientes |
-| Eliminar alumnos | Elimina un alumno con diálogo de confirmación |
-| Sumar horas | Botones rápidos de +1h, +0.5h y entrada personalizada |
-| Deuda acumulada | Cálculo automático: horas pendientes x precio/hora |
-| Cobrar | Registra el cobro en el historial y resetea las horas a 0 |
-| Historial de cobros | Lista cronológica con alumno, monto, horas y fecha |
-| Filtros en historial | Filtrar por período, alumno y ordenación |
-| Resumen global | Total cobrado y horas totales en el historial |
-| Ajustes | Tema, moneda y duración por defecto configurables |
-| Confirmaciones | Diálogos de confirmación para acciones destructivas |
+| Función              | Descripción                                               |
+| -------------------- | --------------------------------------------------------- |
+| Añadir alumnos       | Registra nuevos alumnos con nombre y precio por hora      |
+| Editar alumnos       | Modifica el nombre, precio/hora u horas pendientes        |
+| Eliminar alumnos     | Elimina un alumno con diálogo de confirmación             |
+| Sumar horas          | Botones rápidos de +1h, +0.5h y entrada personalizada     |
+| Deuda acumulada      | Cálculo automático: horas pendientes x precio/hora        |
+| Cobrar               | Registra el cobro en el historial y resetea las horas a 0 |
+| Historial de cobros  | Lista cronológica con alumno, monto, horas y fecha        |
+| Filtros en historial | Filtrar por período, alumno y ordenación                  |
+| Resumen global       | Total cobrado y horas totales en el historial             |
+| Ajustes              | Tema, moneda y duración por defecto configurables         |
+| Confirmaciones       | Diálogos de confirmación para acciones destructivas       |
 
 ---
 
 ## Pantallas
 
 ### Alumnos
+
 - Tarjeta resumen con estadísticas globales (alumnos, horas, deuda total)
 - Lista de tarjetas con la información de cada alumno
 - Botones de acción: +1h, +0.5h, +Xh personalizado y Cobrar
@@ -35,6 +36,7 @@ Desarrollada con React Native, Expo y TypeScript.
 - Deuda destacada en rojo cuando es mayor a 0
 
 ### Historial
+
 - Total cobrado y horas totales filtrados dinámicamente
 - Lista de cobros con nombre, monto, horas y fecha
 - Filtros por período (todos, este mes, mes anterior, este año)
@@ -43,6 +45,7 @@ Desarrollada con React Native, Expo y TypeScript.
 - Borrar historial completo con confirmación
 
 ### Ajustes
+
 - Selector de tema (claro, oscuro, sistema)
 - Selector de moneda (EUR, USD, GBP)
 - Duración por defecto de las clases
@@ -99,90 +102,24 @@ App-profesores-REACT/
 
 ## Stack tecnologico
 
-| Tecnologia | Proposito |
-|---|---|
-| React Native | Framework principal |
-| Expo | Herramientas de desarrollo y compilacion |
-| TypeScript | Tipado estatico |
-| Expo SQLite | Base de datos local |
-| AsyncStorage | Persistencia de ajustes |
-| React Navigation | Navegacion entre pantallas |
-| Expo Linear Gradient | Efectos visuales de difuminado |
-| Expo Vector Icons | Iconografia |
-| Expo Constants | Informacion de la aplicacion |
-
----
-
-## Modelo de datos
-
-### Alumno
-```typescript
-type Alumno = {
-  id: number;
-  nombre: string;
-  precioPorHora: number;
-  horasPendientes: number;
-}
-```
-
-### PagoRegistro
-```typescript
-type PagoRegistro = {
-  id: number;
-  alumnoId: number | null;   // null si el alumno fue eliminado
-  alumnoNombre: string;      // snapshot del nombre en el momento del cobro
-  horasCobradas: number;
-  montoCobrado: number;
-  fecha: string;             // formato ISO con hora local
-}
-```
-
-### Ajustes
-```typescript
-type Ajustes = {
-  tema: 'claro' | 'oscuro' | 'sistema';
-  moneda: '€' | '$' | '£';
-  duracion: 0.5 | 1 | 1.5 | 2;
-}
-```
-
----
-
-## Como ejecutar
-
-### Requisitos
-- Node.js LTS
-- App Expo Go en el dispositivo movil
-
-### Iniciar
-
-```bash
-npx expo start
-```
-
-Escanea el codigo QR con Expo Go. El dispositivo y el PC deben estar en la misma red Wi-Fi.
+| Tecnologia           | Proposito                                |
+| -------------------- | ---------------------------------------- |
+| React Native         | Framework principal                      |
+| Expo                 | Herramientas de desarrollo y compilacion |
+| TypeScript           | Tipado estatico                          |
+| Expo SQLite          | Base de datos local                      |
+| AsyncStorage         | Persistencia de ajustes                  |
+| React Navigation     | Navegacion entre pantallas               |
+| Expo Linear Gradient | Efectos visuales de difuminado           |
+| Expo Vector Icons    | Iconografia                              |
+| Expo Constants       | Informacion de la aplicacion             |
 
 ---
 
 ## Mejoras futuras
 
-- [ ] Seleccion de idioma
 - [ ] Exportar historial a CSV
 - [ ] Notificaciones de cobro pendiente
 - [ ] Estadisticas graficas de ingresos mensuales
 - [ ] Busqueda de alumnos por nombre
 - [ ] Ordenar alumnos por nombre, deuda u horas
-
----
-
-## Mejoras futuras visuales
-
-| Prioridad	| Mejora | |
-| --- | --- | --- | 
-| 1	| Feedback háptico (expo-haptics) | * | 
-| 2	| Empty State en AlumnosScreen | * |
-| 3	| Menú tres puntos en AlumnoCard (Editar/Eliminar) |
-| 4	| tabBarShowLabel: false en TabNavigator | * |
-| 5	| Subir sombras ligeramente | * | 
-| 6	| Tipografía personalizada (Inter) | * |
-| 7	| Header con blur al scroll | * |

@@ -41,7 +41,6 @@ export function useAjustes() {
   const [ajustes, setAjustes] = useState<Ajustes>(AJUSTES_DEFAULT);
   const [cargando, setCargando] = useState(true);
 
-  // Cargar ajustes al iniciar
   useEffect(() => {
     const cargarAjustes = async () => {
       try {

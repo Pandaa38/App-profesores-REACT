@@ -33,6 +33,29 @@ export function inicializarDB() {
       fecha TEXT NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
     );
 
+    CREATE TABLE IF NOT EXISTS dias_laborables (
+      id INTEGER PRIMARY KEY,
+      habilitado INTEGER NOT NULL DEFAULT 1
+    );
+
+    INSERT OR IGNORE INTO dias_laborables (id, habilitado) VALUES 
+    (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 0), (7, 0);
+
+    CREATE TABLE IF NOT EXISTS horarios (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      alumno_id INTEGER NOT NULL REFERENCES alumnos(id) ON DELETE CASCADE,
+      dia_id INTEGER NOT NULL REFERENCES dias_laborables(id),
+      hora_inicio TEXT NOT NULL,
+      hora_fin TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS notas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      horario_id INTEGER NOT NULL REFERENCES horarios(id) ON DELETE CASCADE,
+      texto TEXT NOT NULL,
+      fecha TEXT,
+      permanente INTEGER NOT NULL DEFAULT 0
+    );
   `);
 }
 
