@@ -1,18 +1,12 @@
-import { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AjustesProvider } from './src/context/AjustesContext';
-import TabNavigator from './src/navigation/TabNavigator';
-import {
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-  useFonts,
-} from '@expo-google-fonts/inter';
-import * as SplashScreen from 'expo-splash-screen';
+import {useEffect} from "react";
+import {NavigationContainer} from "@react-navigation/native";
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import {AjustesProvider} from "./src/context/AjustesContext";
+import TabNavigator from "./src/navigation/TabNavigator";
+import {Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, useFonts} from "@expo-google-fonts/inter";
+import * as SplashScreen from "expo-splash-screen";
 
-import './src/i18n/i18n';
+import "./src/i18n/i18n";
 
 SplashScreen.preventAutoHideAsync();
 

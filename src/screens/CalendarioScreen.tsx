@@ -1,33 +1,113 @@
-import { useState, useMemo, useRef } from "react";
-import { StyleSheet, View, Animated, ScrollView } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import {useEffect, useMemo, useRef, useState} from "react";
+import {StyleSheet, View, Animated} from "react-native";
+import {SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
+import PagerView from "react-native-pager-view";
 
-import AlumnoCard from "../components/AlumnoCard";
-import AddButton from "../components/AddButton";
-import FormularioAlumno from "../components/FormAlumno";
 import Header from "../components/Header";
-import EmptyState from "../components/EmptyState";
+import CalendaroSemana from "../components/CalendaroSemana";
+import AddButton from "../components/AddButton";
+import FormularioHorario from "../components/FormHorario";
 
-import { useAlumnos } from "../hooks/useAlumnos";
-import { useTheme } from "../theme/useTheme";
-import { Colores } from "../theme/colores";
-import { Alumno } from "../type/types";
-import { useTranslation } from "react-i18next";
+import {useTheme} from "../theme/useTheme";
+import {Colores} from "../theme/colores";
+import {useTranslation} from "react-i18next";
+import {useAjustesContext} from "../context/AjustesContext";
+import {useAlumnos} from "../hooks/useAlumnos";
+
+function calcularSemanaSiguiente(lunes: Date, semanas: number) {
+  const nuevaFecha = new Date(lunes);
+  nuevaFecha.setDate(nuevaFecha.getDate() + semanas * 7);
+  return nuevaFecha;
+}
+
+function calcularSemanaAnterior(lunes: Date, semanas: number) {
+  const nuevaFecha = new Date(lunes);
+  nuevaFecha.setDate(nuevaFecha.getDate() - semanas * 7);
+  return nuevaFecha;
+}
 
 export default function CalendarioScreen() {
   const c = useTheme();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const styles = useMemo(() => makeStyles(c), [c]);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const pagerRef = useRef<PagerView>(null);
+
+  const posicionPendiente = useRef<number | null>(null);
+
+  const [formVisible, setFormVisible] = useState(false);
+
+  const {alumnos} = useAlumnos();
+  const {calendario} = useAjustesContext();
+  const {lunesActual, diasLaborables, avanzarSemana, retrocederSemana, crearHorario} = calendario;
+  const diasActivos = useMemo(() => diasLaborables.filter((d) => d.habilitado), [diasLaborables]);
+
+  const semanaPasada = useMemo(() => calcularSemanaAnterior(lunesActual, 1), [lunesActual]);
+  const semanaQueViene = useMemo(() => calcularSemanaSiguiente(lunesActual, 1), [lunesActual]);
+
+  useEffect(() => {
+    pagerRef.current?.setPageWithoutAnimation(1);
+  }, [lunesActual]);
+
+  const handlePageSelected = (e: any) => {
+    posicionPendiente.current = e.nativeEvent.position;
+  };
+
+  const handlePageScrollStateChanged = (e: any) => {
+    if (e.nativeEvent.pageScrollState === "idle" && posicionPendiente.current !== null) {
+      if (posicionPendiente.current === 0) {
+        retrocederSemana();
+      } else if (posicionPendiente.current === 2) {
+        avanzarSemana();
+      }
+      posicionPendiente.current = null;
+    }
+  };
+
+  const handleGuardarHorario = (alumnoId: number | null, diaId: number | null, horaInicio: string, horaFin: string) => {
+    if (alumnoId === null || diaId === null) return;
+
+    crearHorario(alumnoId, diaId, horaInicio, horaFin);
+    setFormVisible(false);
+  };
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        {/* Cabecera minimalista */}
         <Header title="Calendario" scrollY={scrollY} />
 
-        <ScrollView></ScrollView>
+        <PagerView
+          ref={pagerRef}
+          style={styles.pager}
+          initialPage={1}
+          onPageSelected={handlePageSelected}
+          onPageScrollStateChanged={handlePageScrollStateChanged}
+          overdrag={false}
+        >
+          <View key="pasado">
+            <CalendaroSemana lunesActual={semanaPasada} diasLaborables={diasLaborables} />
+          </View>
+
+          <View key="presente">
+            <CalendaroSemana lunesActual={lunesActual} diasLaborables={diasLaborables} />
+          </View>
+
+          <View key="futuro">
+            <CalendaroSemana lunesActual={semanaQueViene} diasLaborables={diasLaborables} />
+          </View>
+        </PagerView>
+
+        <View style={styles.fabContainer}>
+          <AddButton tipo="addHorario" onPress={() => setFormVisible(true)} />
+        </View>
+
+        <FormularioHorario
+          visible={formVisible}
+          alumnos={alumnos}
+          dias={diasActivos}
+          onGuardar={handleGuardarHorario}
+          onCancelar={() => setFormVisible(false)}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -40,20 +120,9 @@ const makeStyles = (c: Colores) =>
       backgroundColor: c.fondo,
       width: "100%",
     },
-    scroll: {
+    pager: {
       flex: 1,
       width: "100%",
-    },
-    scrollContent: {
-      alignItems: "center",
-      paddingVertical: 10,
-      paddingBottom: 140,
-    },
-    scrollVacio: {
-      flexGrow: 1,
-      alignItems: "center",
-      paddingVertical: 10,
-      paddingBottom: 140,
     },
     gradientBottom: {
       position: "absolute",

@@ -1,18 +1,16 @@
-import { useState, useMemo } from 'react';
-import {
-  View, Text, StyleSheet, Modal, TouchableOpacity,
-  TouchableWithoutFeedback
-} from 'react-native';
+import {useState, useMemo} from "react";
+import {View, Text, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
-import { Alumno } from '../type/types';
-import { FiltrosHistorial, FILTROS_DEFAULT, Periodo, Orden } from '../database/dataHistorial';
-import { useTheme } from '../theme/useTheme';
-import { Colores } from '../theme/colores';
+import {Alumno} from "../type/types";
+import {FiltrosHistorial, FILTROS_DEFAULT, Periodo, Orden} from "../database/dataHistorial";
+import {useTheme} from "../theme/useTheme";
+import {Colores} from "../theme/colores";
 
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { useTranslation } from 'react-i18next';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import {useTranslation} from "react-i18next";
 
 type FilterModalProps = {
   visible: boolean;
@@ -22,15 +20,16 @@ type FilterModalProps = {
   onCerrar: () => void;
 };
 
-export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCerrar }: FilterModalProps) {
+export default function FilterModal({visible, filtros, alumnos, onAplicar, onCerrar}: FilterModalProps) {
   const [filtrosLocales, setFiltrosLocales] = useState<FiltrosHistorial>(filtros);
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
 
   const c = useTheme();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
+  const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(c), [c]);
 
-  const alumnoSeleccionado = alumnos.find(a => a.id === filtrosLocales.alumnoId);
+  const alumnoSeleccionado = alumnos.find((a) => a.id === filtrosLocales.alumnoId);
 
   const handleAplicar = () => {
     onAplicar(filtrosLocales);
@@ -42,289 +41,302 @@ export default function FilterModal({ visible, filtros, alumnos, onAplicar, onCe
     setDropdownAbierto(false);
   };
 
-  const periodos: { label: string; value: Periodo }[] = [
-    { label: t('filtros.todos'), value: 'todos' },
-    { label: t('filtros.esteMes'), value: 'esteMes' },
-    { label: t('filtros.mesAnterior'), value: 'mesAnterior' },
-    { label: t('filtros.esteAno'), value: 'esteAno' },
+  const periodos: {label: string; value: Periodo}[] = [
+    {label: t("filtros.todos"), value: "todos"},
+    {label: t("filtros.esteMes"), value: "esteMes"},
+    {label: t("filtros.mesAnterior"), value: "mesAnterior"},
+    {label: t("filtros.esteAno"), value: "esteAno"},
   ];
 
-  const ordenes: { label: string; value: Orden }[] = [
-    { label: t('filtros.recientes'), value: 'recientes' },
-    { label: t('filtros.antiguos'), value: 'antiguos' },
-    { label: t('filtros.mayorImporte'), value: 'mayorImporte' },
+  const ordenes: {label: string; value: Orden}[] = [
+    {label: t("filtros.recientes"), value: "recientes"},
+    {label: t("filtros.antiguos"), value: "antiguos"},
+    {label: t("filtros.mayorImporte"), value: "mayorImporte"},
   ];
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <TouchableWithoutFeedback onPress={onCerrar}>
-        <View style={styles.fondo} />
-      </TouchableWithoutFeedback>
+      <View style={styles.modalContainer}>
+        <TouchableWithoutFeedback onPress={onCerrar}>
+          <View style={styles.fondo} />
+        </TouchableWithoutFeedback>
 
-      <View style={styles.panel}>
+        <View style={styles.panelWrapper}>
+          <View style={[styles.panel, {paddingBottom: 24 + insets.bottom}]}>
+            {/* Cabecera */}
+            <View style={styles.cabecera}>
+              <Text style={styles.titulo}>{t("filtros.titulo")}</Text>
+              <TouchableOpacity onPress={onCerrar}>
+                <AntDesign name="close" size={20} color={c.textoP} />
+              </TouchableOpacity>
+            </View>
 
-        {/* Cabecera */}
-        <View style={styles.cabecera}>
-          <Text style={styles.titulo}>{t('filtros.titulo')}</Text>
-          <TouchableOpacity onPress={onCerrar}>
-            <AntDesign name="close" size={20} color={c.textoP} />
-          </TouchableOpacity>
-        </View>
+            {/* PERÍODO */}
+            <View style={styles.seccionHeader}>
+              <Ionicons name="calendar-clear-outline" size={18} color={c.textoS} />
+              <Text style={styles.seccionTitulo}>{t("filtros.periodo")}</Text>
+            </View>
+            <View style={styles.chips}>
+              {periodos.map((p) => (
+                <TouchableOpacity
+                  key={p.value}
+                  style={[styles.chip, filtrosLocales.periodo === p.value && styles.chipActivo]}
+                  onPress={() => setFiltrosLocales((f) => ({...f, periodo: p.value}))}
+                >
+                  <Text style={[styles.chipTexto, filtrosLocales.periodo === p.value && styles.chipTextoActivo]}>
+                    {p.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
-        {/* PERÍODO */}
-        <View style={styles.seccionHeader}>
-          <Ionicons name="calendar-clear-outline" size={18} color={c.textoS} />
-          <Text style={styles.seccionTitulo}>{t('filtros.periodo')}</Text>
-        </View>
-        <View style={styles.chips}>
-          {periodos.map(p => (
-            <TouchableOpacity
-              key={p.value}
-              style={[styles.chip, filtrosLocales.periodo === p.value && styles.chipActivo]}
-              onPress={() => setFiltrosLocales(f => ({ ...f, periodo: p.value }))}
-            >
-              <Text style={[styles.chipTexto, filtrosLocales.periodo === p.value && styles.chipTextoActivo]}>
-                {p.label}
+            {/* ALUMNO */}
+            <View style={styles.seccionHeader}>
+              <AntDesign name="user-switch" size={18} color={c.textoS} />
+              <Text style={styles.seccionTitulo}>{t("filtros.alumno")}</Text>
+            </View>
+            <TouchableOpacity style={styles.dropdown} onPress={() => setDropdownAbierto(!dropdownAbierto)}>
+              <Text style={styles.dropdownTexto}>
+                {alumnoSeleccionado ? alumnoSeleccionado.nombre : t("filtros.todosLosAlumnos")}
               </Text>
+              <AntDesign name={dropdownAbierto ? "up" : "down"} size={14} color={c.textoS} />
             </TouchableOpacity>
-          ))}
-        </View>
 
-        {/* ALUMNO */}
-        <View style={styles.seccionHeader}>
-          <AntDesign name="user-switch" size={18} color={c.textoS} />
-          <Text style={styles.seccionTitulo}>{t('filtros.alumno')}</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.dropdown}
-          onPress={() => setDropdownAbierto(!dropdownAbierto)}
-        >
-          <Text style={styles.dropdownTexto}>
-            {alumnoSeleccionado ? alumnoSeleccionado.nombre : t('filtros.todosLosAlumnos')}
-          </Text>
-          <AntDesign
-            name={dropdownAbierto ? 'up' : 'down'}
-            size={14}
-            color={c.textoS}
-          />
-        </TouchableOpacity>
+            {dropdownAbierto && (
+              <View style={styles.dropdownLista}>
+                <TouchableOpacity
+                  style={[styles.dropdownItem, filtrosLocales.alumnoId === null && styles.dropdownItemActivo]}
+                  onPress={() => {
+                    setFiltrosLocales((f) => ({...f, alumnoId: null}));
+                    setDropdownAbierto(false);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.dropdownItemTexto,
+                      filtrosLocales.alumnoId === null && styles.dropdownItemTextoActivo,
+                    ]}
+                  >
+                    {t("filtros.todosLosAlumnos")}
+                  </Text>
+                </TouchableOpacity>
+                {alumnos.map((alumno) => (
+                  <TouchableOpacity
+                    key={alumno.id}
+                    style={[styles.dropdownItem, filtrosLocales.alumnoId === alumno.id && styles.dropdownItemActivo]}
+                    onPress={() => {
+                      setFiltrosLocales((f) => ({...f, alumnoId: alumno.id}));
+                      setDropdownAbierto(false);
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.dropdownItemTexto,
+                        filtrosLocales.alumnoId === alumno.id && styles.dropdownItemTextoActivo,
+                      ]}
+                    >
+                      {alumno.nombre}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
 
-        {dropdownAbierto && (
-          <View style={styles.dropdownLista}>
-            <TouchableOpacity
-              style={[styles.dropdownItem, filtrosLocales.alumnoId === null && styles.dropdownItemActivo]}
-              onPress={() => {
-                setFiltrosLocales(f => ({ ...f, alumnoId: null }));
-                setDropdownAbierto(false);
-              }}
-            >
-              <Text style={[styles.dropdownItemTexto, filtrosLocales.alumnoId === null && styles.dropdownItemTextoActivo]}>
-                {t('filtros.todosLosAlumnos')}
-              </Text>
-            </TouchableOpacity>
-            {alumnos.map(alumno => (
+            {/* ORDENAR POR */}
+            <View style={styles.seccionHeader}>
+              <FontAwesome name="sort" size={18} color={c.textoS} />
+              <Text style={styles.seccionTitulo}>{t("filtros.ordenarPor")}</Text>
+            </View>
+            {ordenes.map((o) => (
               <TouchableOpacity
-                key={alumno.id}
-                style={[styles.dropdownItem, filtrosLocales.alumnoId === alumno.id && styles.dropdownItemActivo]}
-                onPress={() => {
-                  setFiltrosLocales(f => ({ ...f, alumnoId: alumno.id }));
-                  setDropdownAbierto(false);
-                }}
+                key={o.value}
+                style={styles.radioFila}
+                onPress={() => setFiltrosLocales((f) => ({...f, orden: o.value}))}
               >
-                <Text style={[styles.dropdownItemTexto, filtrosLocales.alumnoId === alumno.id && styles.dropdownItemTextoActivo]}>
-                  {alumno.nombre}
-                </Text>
+                <View style={styles.radioCirculo}>
+                  {filtrosLocales.orden === o.value && <View style={styles.radioRelleno} />}
+                </View>
+                <Text style={styles.radioTexto}>{o.label}</Text>
               </TouchableOpacity>
             ))}
-          </View>
-        )}
 
-        {/* ORDENAR POR */}
-        <View style={styles.seccionHeader}>
-          <FontAwesome name="sort" size={18} color={c.textoS} />
-          <Text style={styles.seccionTitulo}>{t('filtros.ordenarPor')}</Text>
-        </View>
-        {ordenes.map(o => (
-          <TouchableOpacity
-            key={o.value}
-            style={styles.radioFila}
-            onPress={() => setFiltrosLocales(f => ({ ...f, orden: o.value }))}
-          >
-            <View style={styles.radioCirculo}>
-              {filtrosLocales.orden === o.value && <View style={styles.radioRelleno} />}
+            {/* BOTONES */}
+            <View style={styles.botones}>
+              <TouchableOpacity style={styles.botonRestablecer} onPress={handleRestablecer}>
+                <Text style={styles.textoRestablecer}>{t("filtros.restablecer")}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.botonAplicar} onPress={handleAplicar}>
+                <Text style={styles.textoAplicar}>{t("filtros.aplicar")}</Text>
+              </TouchableOpacity>
             </View>
-            <Text style={styles.radioTexto}>{o.label}</Text>
-          </TouchableOpacity>
-        ))}
-
-        {/* BOTONES */}
-        <View style={styles.botones}>
-          <TouchableOpacity style={styles.botonRestablecer} onPress={handleRestablecer}>
-            <Text style={styles.textoRestablecer}>{t('filtros.restablecer')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.botonAplicar} onPress={handleAplicar}>
-            <Text style={styles.textoAplicar}>{t('filtros.aplicar')}</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-
       </View>
     </Modal>
   );
 }
 
-const makeStyles = (c: Colores) => StyleSheet.create({
-  fondo: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
-  panel: {
-    backgroundColor: c.tarjeta,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 24,
-    paddingBottom: 40,
-    gap: 12,
-  },
-  cabecera: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: c.textoP,
-  },
-  seccionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginTop: 8,
-  },
-  seccionTitulo: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: c.textoS,
-  },
-  chips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    minWidth: 64,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: c.borde,
-    backgroundColor: c.tarjeta,
-    alignItems: 'center',
-  },
-  chipActivo: {
-    backgroundColor: c.accion,
-    borderColor: c.accion,
-  },
-  chipTexto: {
-    fontSize: 13,
-    color: c.textoS,
-    textAlign: 'center',
-  },
-  chipTextoActivo: {
-    color: c.accionTexto,
-  },
-  dropdown: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: c.borde,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-  },
-  dropdownTexto: {
-    fontSize: 14,
-    color: c.textoP,
-  },
-  dropdownLista: {
-    borderWidth: 1,
-    borderColor: c.borde,
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginTop: -4,
-  },
-  dropdownItem: {
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: c.borde,
-  },
-  dropdownItemActivo: {
-    backgroundColor: c.fondo,
-  },
-  dropdownItemTexto: {
-    fontSize: 14,
-    color: c.textoS,
-  },
-  dropdownItemTextoActivo: {
-    fontWeight: '600',
-    color: c.textoP,
-  },
-  radioFila: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingVertical: 4,
-  },
-  radioCirculo: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: c.accion,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioRelleno: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: c.accion,
-  },
-  radioTexto: {
-    fontSize: 14,
-    color: c.textoS,
-  },
-  botones: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 16,
-  },
-  botonRestablecer: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: c.borde,
-    alignItems: 'center',
-  },
-  textoRestablecer: {
-    fontSize: 15,
-    color: c.textoS,
-    fontWeight: '500',
-  },
-  botonAplicar: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 10,
-    backgroundColor: c.accion,
-    alignItems: 'center',
-  },
-  textoAplicar: {
-    fontSize: 15,
-    color: c.accionTexto,
-    fontWeight: '600',
-  },
-});
+const makeStyles = (c: Colores) =>
+  StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: "flex-end",
+    },
+    fondo: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: "rgba(0,0,0,0.3)",
+    },
+    panelWrapper: {
+      justifyContent: "flex-end",
+    },
+    panel: {
+      backgroundColor: c.tarjeta,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      paddingHorizontal: 24,
+      paddingTop: 24,
+      gap: 12,
+    },
+    cabecera: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 8,
+    },
+    titulo: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: c.textoP,
+    },
+    seccionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 8,
+    },
+    seccionTitulo: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: c.textoS,
+    },
+    chips: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+    },
+    chip: {
+      minWidth: 64,
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: c.borde,
+      backgroundColor: c.tarjeta,
+      alignItems: "center",
+    },
+    chipActivo: {
+      backgroundColor: c.accion,
+      borderColor: c.accion,
+    },
+    chipTexto: {
+      fontSize: 13,
+      color: c.textoS,
+      textAlign: "center",
+    },
+    chipTextoActivo: {
+      color: c.accionTexto,
+    },
+    dropdown: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: c.borde,
+      borderRadius: 10,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+    },
+    dropdownTexto: {
+      fontSize: 14,
+      color: c.textoP,
+    },
+    dropdownLista: {
+      borderWidth: 1,
+      borderColor: c.borde,
+      borderRadius: 10,
+      overflow: "hidden",
+      marginTop: -4,
+    },
+    dropdownItem: {
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: c.borde,
+    },
+    dropdownItemActivo: {
+      backgroundColor: c.fondo,
+    },
+    dropdownItemTexto: {
+      fontSize: 14,
+      color: c.textoS,
+    },
+    dropdownItemTextoActivo: {
+      fontWeight: "600",
+      color: c.textoP,
+    },
+    radioFila: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      paddingVertical: 4,
+    },
+    radioCirculo: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: c.accion,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    radioRelleno: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: c.accion,
+    },
+    radioTexto: {
+      fontSize: 14,
+      color: c.textoS,
+    },
+    botones: {
+      flexDirection: "row",
+      gap: 12,
+      marginTop: 16,
+    },
+    botonRestablecer: {
+      flex: 1,
+      paddingVertical: 14,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: c.borde,
+      alignItems: "center",
+    },
+    textoRestablecer: {
+      fontSize: 15,
+      color: c.textoS,
+      fontWeight: "500",
+    },
+    botonAplicar: {
+      flex: 1,
+      paddingVertical: 14,
+      borderRadius: 10,
+      backgroundColor: c.accion,
+      alignItems: "center",
+    },
+    textoAplicar: {
+      fontSize: 15,
+      color: c.accionTexto,
+      fontWeight: "600",
+    },
+  });

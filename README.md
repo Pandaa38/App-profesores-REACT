@@ -123,3 +123,19 @@ App-profesores-REACT/
 - [ ] Estadisticas graficas de ingresos mensuales
 - [ ] Busqueda de alumnos por nombre
 - [ ] Ordenar alumnos por nombre, deuda u horas
+
+## PANTALLA CALENDARIO
+ - Vista Semanal (componente):
+inspiracion calendario por defecto samsung. Rendarizamos en columnas (CssGrind) los dias marcados como habilitados. 
+La cabecera (donde ponemos los dias) es rigida, la malla donde ponemos los horarios tiene scrollY. Separamos celdas con linea fina.
+| Mes |
+|--------------------------------|
+| t(Lun) | t(Mar) | t(Mie) | ... |
+| -------------------------------|
+|franjas de horas| Malla de celdas|
+|NAVEGATOR|
+ScrollX pasar derecha semana siguiente pasar izquierda semana anterior
+Boton añadir horario abajo derecha (mismo sitio añadir alumno).
+Un horario crea una celda/caja. Al hacer click se pueden añadir notas (permanentes o para ese dia concreto).
+La longitud de la celda depende de la diferencia entre hora inicio y hora fin, empieza en una y crece hasta la otra.
+(componentes necesarios: FormHorario, Celda, FormNota)
