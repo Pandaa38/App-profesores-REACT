@@ -1,5 +1,5 @@
 import db from './database';
-import { DiaLaborable, Horario, Nota } from '../type/types';
+import { DiaLaborable, Horario, HorarioConAlumno, Nota } from '../type/types';
 
 export function getDiasLaborables(): DiaLaborable[] {
   const rows = db.getAllSync<{ id: number; habilitado: number }>(
@@ -21,17 +21,19 @@ export function updateDiaLaborable(id: number, habilitado: boolean): void {
 
 /////////////////////////////////////////////////
 
-export function getHorarios(): Horario[] {
-  // Renombramos las columnas en la consulta para que coincidan con la interfaz Horario
-  return db.getAllSync<Horario>(
+export function getHorarios(): HorarioConAlumno[] {
+  return db.getAllSync<HorarioConAlumno>(
     `SELECT 
-      id, 
-      alumno_id AS alumnoId, 
-      dia_id AS diaId, 
-      hora_inicio AS horaInicio, 
-      hora_fin AS horaFin 
-    FROM horarios
-    ORDER BY dia_id ASC, hora_inicio ASC;`
+       h.id, 
+       h.alumno_id AS alumnoId, 
+       h.dia_id AS diaId, 
+       h.hora_inicio AS horaInicio, 
+       h.hora_fin AS horaFin,
+       a.nombre AS alumnoNombre,
+       a.precioPorHora
+     FROM horarios h
+     INNER JOIN alumnos a ON h.alumno_id = a.id
+     ORDER BY h.dia_id ASC, h.hora_inicio ASC;`
   );
 }
 
@@ -41,6 +43,18 @@ export function addHorario(alumnoId: number, diaId: number, horaInicio: string, 
      VALUES (?, ?, ?, ?);`,
     [alumnoId, diaId, horaInicio, horaFin]
   );
+}
+
+export function addHorariosMultiples(alumnoId: number, diasIds: number[], horaInicio: string, horaFin: string): void {
+  db.withTransactionSync(() => {
+    for (const diaId of diasIds) {
+      db.runSync(
+        `INSERT INTO horarios (alumno_id, dia_id, hora_inicio, hora_fin) 
+         VALUES (?, ?, ?, ?);`,
+        [alumnoId, diaId, horaInicio, horaFin]
+      );
+    }
+  });
 }
 
 export function updateHorario(id: number, diaId: number, horaInicio: string, horaFin: string): void {

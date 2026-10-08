@@ -1,11 +1,11 @@
-// src/hooks/useCalendario.ts
 import { useState, useEffect, useCallback } from 'react';
-import { DiaLaborable, Horario, Nota } from '../type/types';
+import { DiaLaborable, HorarioConAlumno, Nota } from '../type/types';
 import {
   getDiasLaborables,
   updateDiaLaborable,
   getHorarios,
   addHorario,
+  addHorariosMultiples,
   updateHorario,
   deleteHorario,
   getNotas,
@@ -14,55 +14,24 @@ import {
   deleteNota,
 } from '../database/dataCalendario';
 
-const getLunes = (fecha: Date): Date => {
-  const d = new Date(fecha);
-  d.setHours(0, 0, 0, 0);
-  const dia = d.getDay();
-  const diff = d.getDate() - dia + (dia === 0 ? -6 : 1);
-  d.setDate(diff);
-  return d;
-};
-
 export function useCalendario() {
-  const [lunesActual, setLunesActual] = useState<Date>(() => getLunes(new Date()));
-
   const [diasLaborables, setDiasLaborables] = useState<DiaLaborable[]>([]);
-  const [horarios, setHorarios] = useState<Horario[]>([]);
+  const [horarios, setHorarios] = useState<HorarioConAlumno[]>([]);
   const [notas, setNotas] = useState<Nota[]>([]);
   const [cargando, setCargando] = useState<boolean>(true);
 
-  const avanzarSemana = useCallback(() => {
-    setLunesActual((prev) => {
-      const next = new Date(prev);
-      next.setDate(prev.getDate() + 7);
-      return next;
-    });
-  }, []);
-
-  const retrocederSemana = useCallback(() => {
-    setLunesActual((prev) => {
-      const prevDate = new Date(prev);
-      prevDate.setDate(prev.getDate() - 7);
-      return prevDate;
-    });
-  }, []);
-
-  const irAHoy = useCallback(() => {
-    setLunesActual(getLunes(new Date()));
-  }, []);
-
+  // Carga sincronizada de datos desde SQLite
   const cargarDatos = useCallback(() => {
     setCargando(true);
     try {
       const diasBD = getDiasLaborables();
       const horariosBD = getHorarios();
       const notasBD = getNotas();
-
       setDiasLaborables(diasBD);
       setHorarios(horariosBD);
       setNotas(notasBD);
     } catch (error) {
-      console.error("Error al cargar datos del calendario:", error);
+      console.error('Error al cargar datos del calendario:', error);
     } finally {
       setCargando(false);
     }
@@ -72,62 +41,96 @@ export function useCalendario() {
     cargarDatos();
   }, [cargarDatos]);
 
-  const toggleDiaLaborable = useCallback((id: number, habilitado: boolean) => {
-    updateDiaLaborable(id, !habilitado);
-    cargarDatos();
-  }, [cargarDatos]);
+  // Modificar visibilidad de un día (Lunes a Domingo)
+  const toggleDiaLaborable = useCallback(
+    (id: number, habilitado: boolean) => {
+      updateDiaLaborable(id, !habilitado);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
-  const crearHorario = useCallback((alumnoId: number, diaId: number, horaInicio: string, horaFin: string) => {
-    addHorario(alumnoId, diaId, horaInicio, horaFin);
-    cargarDatos();
-  }, [cargarDatos]);
+  // Crear una clase en un único día
+  const crearHorario = useCallback(
+    (alumnoId: number, diaId: number, horaInicio: string, horaFin: string) => {
+      addHorario(alumnoId, diaId, horaInicio, horaFin);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
-  const editarHorario = useCallback((id: number, diaId: number, horaInicio: string, horaFin: string) => {
-    updateHorario(id, diaId, horaInicio, horaFin);
-    cargarDatos();
-  }, [cargarDatos]);
+  // Crear una clase en múltiples días de forma atómica en SQLite
+  const crearHorariosMultiples = useCallback(
+    (alumnoId: number, diasIds: number[], horaInicio: string, horaFin: string) => {
+      addHorariosMultiples(alumnoId, diasIds, horaInicio, horaFin);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
-  const eliminarHorario = useCallback((id: number) => {
-    deleteHorario(id);
-    cargarDatos();
-  }, [cargarDatos]);
+  // Modificar horario existente
+  const editarHorario = useCallback(
+    (id: number, diaId: number, horaInicio: string, horaFin: string) => {
+      updateHorario(id, diaId, horaInicio, horaFin);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
-  const crearNota = useCallback((horarioId: number, texto: string, fecha: string | null, permanente: boolean) => {
-    addNota(horarioId, texto, fecha, permanente);
-    cargarDatos();
-  }, [cargarDatos]);
+  // Eliminar horario
+  const eliminarHorario = useCallback(
+    (id: number) => {
+      deleteHorario(id);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
-  const editarNota = useCallback((id: number, texto: string, fecha: string | null, permanente: boolean) => {
-    updateNota(id, texto, fecha, permanente);
-    cargarDatos();
-  }, [cargarDatos]);
+  // Gestión de Notas
+  const crearNota = useCallback(
+    (horarioId: number, texto: string, fecha: string | null, permanente: boolean) => {
+      addNota(horarioId, texto, fecha, permanente);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
-  const eliminarNota = useCallback((id: number) => {
-    deleteNota(id);
-    cargarDatos();
-  }, [cargarDatos]);
+  const editarNota = useCallback(
+    (id: number, texto: string, fecha: string | null, permanente: boolean) => {
+      updateNota(id, texto, fecha, permanente);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
+
+  const eliminarNota = useCallback(
+    (id: number) => {
+      deleteNota(id);
+      cargarDatos();
+    },
+    [cargarDatos]
+  );
 
   return {
-    // Estados
-    lunesActual,
+    // Estado
     diasLaborables,
     horarios,
     notas,
     cargando,
-    
-    // Navegación de tiempo
-    avanzarSemana,
-    retrocederSemana,
-    irAHoy,
-    
-    // Acciones de Base de Datos
+
+    // Acciones de Horarios y Días
     toggleDiaLaborable,
     crearHorario,
+    crearHorariosMultiples,
     editarHorario,
     eliminarHorario,
+
+    // Acciones de Notas
     crearNota,
     editarNota,
     eliminarNota,
-    cargarDatos
+
+    // Recarga manual
+    cargarDatos,
   };
 }

@@ -4,12 +4,12 @@ Un alumno tiene un nombre, un precio por hora, una cantidad de horas pendientes(
 Los pagos se guardan con atributos pa luego filtrarlos y se guardan en un historial
 
 */
-export type Clase = {
-  fecha: string;
-  horas: number;
-  alumno: Alumno;
-  pagoRegistro: PagoRegistro;
-}
+// export type Clase = {
+//   fecha: string;
+//   horas: number;
+//   alumno: Alumno;
+//   pagoRegistro: PagoRegistro;
+// }
 
 export interface Alumno {
   id: number;
@@ -38,11 +38,16 @@ export interface DiaLaborable {
 }
 
 export interface Horario {
-  id?: number;
+  id: number;
   alumnoId: number;
   diaId: number;
-  horaInicio: string;
-  horaFin: string;
+  horaInicio: string; // "HH:MM"
+  horaFin: string;    // "HH:MM"
+}
+
+export interface HorarioConAlumno extends Horario {
+  alumnoNombre: string;
+  precioPorHora?: number;
 }
 
 export interface Nota {

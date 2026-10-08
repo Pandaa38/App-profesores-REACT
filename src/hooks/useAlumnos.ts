@@ -14,7 +14,9 @@ export function useAlumnos() {
     setAlumnos(datos);
   };
 
-  useEffect(() => { inicializarDB(); cargarAlumnos(); }, []);
+  useEffect(() => { 
+    //inicializarDB(); 
+    cargarAlumnos(); }, []);
 
   const handleCobrar = (alumno: Alumno) => {
     const monto = alumno.horasPendientes * alumno.precioPorHora;

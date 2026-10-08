@@ -3,6 +3,8 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabaseSync('profesores.db');
 
 export function inicializarDB() {
+  db.execSync('PRAGMA foreign_keys = ON;');
+  
   db.execSync(`
     CREATE TABLE IF NOT EXISTS alumnos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +48,9 @@ export function inicializarDB() {
       alumno_id INTEGER NOT NULL REFERENCES alumnos(id) ON DELETE CASCADE,
       dia_id INTEGER NOT NULL REFERENCES dias_laborables(id),
       hora_inicio TEXT NOT NULL,
-      hora_fin TEXT NOT NULL
+      hora_fin TEXT NOT NULL,
+      CONSTRAINT chk_dia_valido CHECK (dia_id BETWEEN 1 AND 7),
+      CONSTRAINT chk_rango_horas CHECK (hora_inicio < hora_fin)
     );
 
     CREATE TABLE IF NOT EXISTS notas (
@@ -58,5 +62,7 @@ export function inicializarDB() {
     );
   `);
 }
+
+inicializarDB();
 
 export default db;

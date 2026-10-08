@@ -10,9 +10,11 @@ type AddButtonTipo = "addAlumno" | "addHorario";
 type AddButtonProps = {
   onPress: () => void;
   tipo?: AddButtonTipo;
+  addAlumno?: boolean;
 };
 
-export default function AddButton({onPress, tipo = "addAlumno"}: AddButtonProps) {
+export default function AddButton({onPress, tipo, addAlumno}: AddButtonProps) {
+  const resolvedTipo = tipo ?? (addAlumno ? "addAlumno" : "addHorario");
   const c = useTheme();
   const {ajustes} = useAjustesContext();
   const sistemaOscuro = useColorScheme() === "dark";
@@ -24,7 +26,7 @@ export default function AddButton({onPress, tipo = "addAlumno"}: AddButtonProps)
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.button} activeOpacity={0.8}>
-      {tipo === "addHorario" ? (
+      {resolvedTipo === "addHorario" ? (
         <FontAwesome6 name="add" size={24} color={iconColor} />
       ) : (
         <AntDesign name="user-add" size={32} color={iconColor} />

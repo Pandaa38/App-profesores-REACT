@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import {useMemo, useRef, useEffect, useState} from "react";
 import {useAjustesContext} from "../context/AjustesContext";
+import {useCalendarioContext} from "../context/CalendarioContext";
 
 // COLORCITOS
 import {useTheme} from "../theme/useTheme";
@@ -32,8 +33,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function AjustesScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
-  const {ajustes, actualizarTema, actualizarMoneda, actualizarIdioma, calendario} = useAjustesContext();
-  const {diasLaborables, toggleDiaLaborable} = calendario;
+  const {ajustes, actualizarTema, actualizarMoneda, actualizarIdioma} = useAjustesContext();
+  const {diasLaborables, toggleDiaLaborable} = useCalendarioContext();
   const c = useTheme();
   const colorScheme = useColorScheme();
   const esOscuro = ajustes.tema === "oscuro" || (ajustes.tema === "sistema" && colorScheme === "dark");
